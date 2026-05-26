@@ -1,539 +1,830 @@
-// src/app/page.tsx
-// ─────────────────────────────────────────────────────────────────────────────
-// LIL SQUIGGLE HOMEPAGE — Complete redesign.
-//
-// What was wrong before:
-//   - No padding/margin control — text ran edge-to-edge
-//   - No visual containment — images just floated
-//   - No hierarchy — every section looked the same weight
-//   - No breathing room — sections stacked with no separation
-//   - Nav had no logo treatment or premium feel
-//
-// What this fixes:
-//   - max-w-6xl content container with generous px-6 padding on everything
-//   - Each section is a properly bordered, spaced visual unit
-//   - MCS card system applied to every block
-//   - Rasta palette used precisely (like MCS uses gold) — as accent, not wallpaper
-//   - The three-eras image is contained in a bordered, rounded card
-//   - Clear typographic hierarchy: display titles → body → captions
-//
-// Sections:
-//   1. Hero          — cinematic, contained, MCS-quality
-//   2. Tagline strip — one-liner with Rasta stripe
-//   3. Video         — contained player card, same as MCS treatment
-//   4. Story / Meet  — proper prose layout, constrained line length
-//   5. Three Eras    — image in a premium card frame
-//   6. Campaign info — production credits, styled like MCS legacy
-//   7. Shop CTA      — clean merch callout
-// ─────────────────────────────────────────────────────────────────────────────
+'use client'
 
-import type { Metadata } from "next"
-import Link              from "next/link"
-import { ArrowRight, ShoppingBag, ChevronDown, Music, Play } from "lucide-react"
-import { Button }    from "@/components/ui/button"
-import { Badge }     from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
+import { useEffect, useRef, useState } from 'react'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
 
-export const metadata: Metadata = {
-  title: "Don't Drink & Dial Decades",
-  description: "One call. Every era. Same regret. The Lil Squiggle campaign from Mid City Sound Studios.",
+const MERCH_URL = 'https://midcitysound.com/merch'
+
+// ── Teaser products — all link to unified store ───────────────────────────────
+const teaserProducts = [
+  {
+    name: 'Rotary Chaos Tee',
+    label: 'Lil Squiggle',
+    price: '$28',
+    desc: 'Vintage-washed heavyweight. Squiggle mid-dial, full chaos.',
+    tag: 'Best Seller',
+    color: 'var(--green)',
+    accent: true,
+  },
+  {
+    name: 'Flip Fails Hoodie',
+    label: 'Lil Squiggle',
+    price: '$55',
+    desc: 'Premium fleece. The flip phone era, distilled into one cozy statement.',
+    tag: 'Limited',
+    color: 'var(--gold)',
+    accent: false,
+  },
+  {
+    name: 'Mid City Sound Dad Hat',
+    label: 'Mid City Sound',
+    price: '$32',
+    desc: 'Unstructured six-panel. Studio-issue. Worn by the people who made the record.',
+    tag: 'New',
+    color: 'var(--gold)',
+    accent: false,
+  },
+  {
+    name: 'Streetbeats Vol. I Crewneck',
+    label: 'Streetbeats',
+    price: '$60',
+    desc: 'Heavyweight French terry. Three brands. One crew. Infinite regret.',
+    tag: '',
+    color: 'var(--gold)',
+    accent: false,
+  },
+]
+
+// ── Era timeline ─────────────────────────────────────────
+const eras = [
+  {
+    decade: '70s',
+    device: 'Rotary Phone',
+    glyph: '📞',
+    desc: "Squiggle spins the dial. Avocado-green kitchen. Same mistake, analog edition.",
+  },
+  {
+    decade: '90s',
+    device: 'Flip Phone',
+    glyph: '📱',
+    desc: 'The satisfying snap of a flip. The unsatisfying aftermath of a 2am call.',
+  },
+  {
+    decade: 'Now',
+    device: 'Smartphone',
+    glyph: '📲',
+    desc: 'Face ID. Read receipts. Zero excuses. Maximum regret.',
+  },
+]
+
+// ── Section reveal hook ───────────────────────────────────
+function useReveal(threshold = 0.15) {
+  const ref = useRef<HTMLElement>(null)
+  const [revealed, setRevealed] = useState(false)
+  useEffect(() => {
+    if (!ref.current) return
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setRevealed(true); obs.disconnect() } },
+      { threshold }
+    )
+    obs.observe(ref.current)
+    return () => obs.disconnect()
+  }, [threshold])
+  return { ref, revealed }
 }
 
-export default function HomePage() {
+// ── Audio player — autoplay muted, volume control, pause ─────────────────
+function AudioToggle() {
+  const audioRef  = useRef<HTMLAudioElement>(null)
+  const [playing, setPlaying]   = useState(false)
+  const [muted,   setMuted]     = useState(true)
+  const [volume,  setVolume]    = useState(0.20)
+  const [started, setStarted]   = useState(false)
+
+  // Autoplay muted on mount
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.volume = volume
+    audio.muted  = true
+    audio.play().then(() => {
+      setPlaying(true)
+      setStarted(true)
+    }).catch(() => {})
+  }, [])
+
+  const togglePlay = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    if (playing) { audio.pause() } else {
+      audio.muted = false
+      setMuted(false)
+      audio.play().catch(() => {})
+    }
+    setPlaying(!playing)
+  }
+
+  const toggleMute = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.muted = !audio.muted
+    setMuted(audio.muted)
+  }
+
+  const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = parseFloat(e.target.value)
+    const audio = audioRef.current
+    if (!audio) return
+    audio.volume = v
+    audio.muted  = false
+    setVolume(v)
+    setMuted(false)
+  }
+
   return (
     <>
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 1. HERO                                                          */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden grain-overlay">
+      <audio ref={audioRef} src="/audio/dont-drink-and-dial.wav" loop />
+      {/* Fixed player bar — bottom right */}
+      <div
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-3 py-2 rounded-full"
+        style={{
+          background: 'rgba(9,9,9,0.90)',
+          border: '1px solid rgba(212,175,119,0.3)',
+          backdropFilter: 'blur(16px)',
+        }}
+      >
+        {/* Volume slider — shown when not muted */}
+        <input
+          type="range" min={0} max={1} step={0.05}
+          value={muted ? 0 : volume}
+          onChange={handleVolume}
+          className="w-16 h-0.5 accent-amber-400 cursor-pointer"
+          style={{ accentColor: 'var(--gold)' }}
+          aria-label="Volume"
+        />
+        {/* Mute toggle */}
+        <button
+          onClick={toggleMute}
+          className="w-7 h-7 flex items-center justify-center transition-colors"
+          style={{ color: muted ? 'rgba(212,175,119,0.3)' : 'var(--gold)' }}
+          aria-label={muted ? 'Unmute' : 'Mute'}
+        >
+          {muted ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3.5 h-3.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3.5 h-3.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+            </svg>
+          )}
+        </button>
+        {/* Play/Pause */}
+        <button
+          onClick={togglePlay}
+          className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
+          style={{ background: 'rgba(212,175,119,0.15)', color: 'var(--gold)', border: '1px solid rgba(212,175,119,0.3)' }}
+          aria-label={playing ? 'Pause' : 'Play'}
+        >
+          {playing ? (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
+              <path fillRule="evenodd" d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z" clipRule="evenodd" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 ml-0.5">
+              <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
+            </svg>
+          )}
+        </button>
+      </div>
+    </>
+  )
+}
 
-        {/* ── Background — same atmospheric treatment as MCS ── */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#060606] via-[#0a0a08] to-[#0f0d08]" />
+// ── Page ─────────────────────────────────────────────────
+export default function Home() {
+  const storyReveal = useReveal()
+  const shopReveal  = useReveal()
+  const ugcReveal   = useReveal()
 
-        {/* Rasta green atmospheric glow — bottom left */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_15%_85%,rgba(29,158,117,0.07),transparent)]" />
-        {/* Rasta gold glow — top right */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_80%_20%,rgba(239,159,39,0.06),transparent)]" />
-        {/* Warm center */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_50%_50%,rgba(212,175,119,0.04),transparent)]" />
+  return (
+    <>
+      <Navbar />
+      <AudioToggle />
 
-        {/* ── Hero content — max-width contained, centered ── */}
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      {/* ═══════════════════════════════ HERO ══════════════════════════════ */}
+      <section
+        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden noise-overlay"
+        style={{
+          background: 'radial-gradient(ellipse 80% 60% at 50% 0%, #1a1510 0%, var(--black) 65%)',
+        }}
+      >
+        {/* Ambient glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 60% 40% at 50% 120%, rgba(29,158,117,0.08) 0%, transparent 70%)',
+          }}
+        />
 
-          {/* Presenter line */}
-          <div
-            className="flex items-center justify-center gap-3 mb-8 opacity-0 animate-fade-up delay-100"
-            style={{ animationFillMode: "forwards" }}
-          >
-            <div className="rasta-divider w-8" />
-            <span className="text-[11px] tracking-[0.28em] uppercase text-mist/70 font-sans">
-              Mid City Sound Presents
-            </span>
-            <div className="rasta-divider w-8" />
+        {/* Hero BG image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{ backgroundImage: 'url(/images/hero-bg.jpg)' }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(9,9,9,0.3) 0%, rgba(9,9,9,0.6) 60%, var(--black) 100%)' }}
+        />
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl mx-auto">
+
+          {/* Mid City Sound masthead */}
+          <div className="animate-fade-in mb-5 flex flex-col items-center gap-3">
+            <a
+              href="https://midcitysound.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col items-center gap-2"
+            >
+              {/* Studio wordmark */}
+              <div
+                className="flex items-center gap-3 px-6 py-3 rounded-sm transition-all duration-300 group-hover:border-[rgba(212,175,119,0.5)]"
+                style={{
+                  border: '1px solid rgba(212,175,119,0.3)',
+                  background: 'rgba(9,9,9,0.6)',
+                  backdropFilter: 'blur(12px)',
+                }}
+              >
+                <div className="flex flex-col items-end leading-none">
+                  <span
+                    className="font-display text-xs md:text-sm font-semibold uppercase tracking-[0.35em]"
+                    style={{ color: 'var(--gold)' }}
+                  >
+                    Mid City Sound
+                  </span>
+                  <span
+                    className="text-[8px] uppercase tracking-[0.5em] mt-0.5"
+                    style={{ color: 'var(--gold-dim)' }}
+                  >
+                    Studios
+                  </span>
+                </div>
+                <div className="w-px h-8 mx-1" style={{ background: 'rgba(212,175,119,0.25)' }} />
+                <span
+                  className="font-display text-base md:text-lg italic font-light tracking-widest"
+                  style={{ color: 'var(--mist)' }}
+                >
+                  Presents
+                </span>
+              </div>
+              <span
+                className="text-[9px] uppercase tracking-[0.4em] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{ color: 'var(--gold-dim)' }}
+              >
+                midcitysound.com ↗
+              </span>
+            </a>
+            {/* Green Squiggle dot accent */}
+            <div className="flex items-center gap-2">
+              <div className="w-px h-3" style={{ background: 'rgba(29,158,117,0.4)' }} />
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--green)' }} />
+              <div className="w-px h-3" style={{ background: 'rgba(29,158,117,0.4)' }} />
+            </div>
           </div>
 
-          {/* Campaign title — MCS-scale display type */}
+          {/* Headline */}
           <h1
-            className="font-display mb-3 opacity-0 animate-fade-up delay-200"
-            style={{ animationFillMode: "forwards" }}
+            className="font-display animate-fade-up delay-100 text-gold-gradient leading-none tracking-tight"
+            style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', fontWeight: 600 }}
           >
-            <span className="block text-[clamp(48px,9vw,110px)] text-cream leading-[0.9]">
-              Don&apos;t Drink
-            </span>
-            <span className="block text-[clamp(48px,9vw,110px)] leading-[0.9]">
-              <span className="text-gold-gradient">&amp; Dial</span>
-            </span>
-            <span className="block text-[clamp(22px,4vw,46px)] text-rasta-gold/80 italic font-light mt-3 tracking-wide">
-              Decades
-            </span>
+            Don't Drink
+            <br />
+            <span className="italic font-light">&amp; Dial</span>
           </h1>
 
-          {/* Tagline — same constrained width treatment as MCS */}
+          {/* Subtitle */}
           <p
-            className="text-mist text-base md:text-lg max-w-md mx-auto leading-relaxed mt-6 mb-10 font-light opacity-0 animate-fade-up delay-300"
-            style={{ animationFillMode: "forwards" }}
+            className="animate-fade-up delay-200 font-display text-base md:text-xl italic font-light mt-4 tracking-widest"
+            style={{ color: 'var(--mist)' }}
           >
-            One call. Every era. Same regret.
+            Decades
           </p>
 
-          {/* CTAs — same button sizing as MCS */}
-          <div
-            className="flex flex-col sm:flex-row gap-3 justify-center opacity-0 animate-fade-up delay-400"
-            style={{ animationFillMode: "forwards" }}
-          >
-            <Button size="lg" asChild>
-              <Link href="/merch">
-                <ShoppingBag className="w-4 h-4" />
-                Shop the Drop
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/story">
-                The Story
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </Button>
+          {/* Divider */}
+          <div className="animate-fade-up delay-300 flex items-center gap-4 my-6 md:my-8">
+            <div className="gold-divider" />
+            <span className="text-[10px] uppercase tracking-[0.4em]" style={{ color: 'var(--gold-dim)' }}>
+              One call. Every era. Same regret.
+            </span>
+            <div className="gold-divider" />
           </div>
 
-          {/* Ecosystem line — same as MCS eyebrow treatment */}
+          {/* CTAs */}
+          <div className="animate-fade-up delay-400 flex flex-col sm:flex-row gap-3 mt-2">
+            <a
+              href={MERCH_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold text-[#090909] font-semibold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-sm"
+            >
+              Shop the Drop ↗
+            </a>
+            <a
+              href="#story"
+              className="btn-outline-gold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-sm"
+              style={{ color: 'var(--cream)' }}
+            >
+              The Story ↓
+            </a>
+          </div>
+
+          {/* Store sub-note */}
           <p
-            className="text-mist/40 text-[11px] tracking-[0.18em] uppercase mt-12 opacity-0 animate-fade-up delay-500"
-            style={{ animationFillMode: "forwards" }}
+            className="animate-fade-up delay-500 text-[10px] uppercase tracking-[0.25em] mt-4"
+            style={{ color: 'var(--gold-dim)' }}
           >
-            Lil Squiggle · Mid City Sound · Streetbeats — One Unified Store
+            Lil Squiggle &middot; Mid City Sound &middot; Streetbeats
           </p>
+
+          {/* Video embed */}
+          <div className="animate-fade-up delay-600 w-full max-w-2xl mt-12 md:mt-16">
+            <div className="video-frame aspect-video w-full">
+              <video
+                src="/video/flip-fails-1.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10">
+                <span
+                  className="text-[10px] uppercase tracking-[0.2em] px-2 py-1 rounded-sm"
+                  style={{ background: 'rgba(9,9,9,0.7)', color: 'var(--gold)', backdropFilter: 'blur(8px)' }}
+                >
+                  Official PSA
+                </span>
+                <span
+                  className="text-[10px] uppercase tracking-[0.2em] px-2 py-1 rounded-sm"
+                  style={{ background: 'rgba(9,9,9,0.7)', color: 'var(--mist)', backdropFilter: 'blur(8px)' }}
+                >
+                  #DontDrinkAndDialDecades
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Scroll cue */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-mist/30 animate-bounce">
-          <span className="text-[9px] tracking-widest uppercase">Scroll</span>
-          <ChevronDown className="w-4 h-4" />
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-float">
+          <span className="text-[9px] uppercase tracking-[0.4em]" style={{ color: 'var(--gold-dim)' }}>Scroll</span>
+          <div className="w-px h-8" style={{ background: 'linear-gradient(to bottom, var(--gold-dim), transparent)' }} />
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 2. RASTA TAGLINE STRIP                                           */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <div className="border-y border-studio-border/50 bg-studio-charcoal py-4">
-        <div className="mx-auto max-w-6xl px-6 flex items-center justify-center gap-8 flex-wrap">
-          {[
-            { color: "bg-rasta-red",   text: "1970s · Rotary" },
-            { color: "bg-rasta-gold",  text: "1990s · Flip Phone" },
-            { color: "bg-rasta-green", text: "Modern · Smartphone" },
-          ].map(({ color, text }) => (
-            <div key={text} className="flex items-center gap-2.5">
-              <div className={`w-2 h-2 rounded-full ${color}`} />
-              <span className="text-[11px] tracking-[0.18em] uppercase text-mist/60 font-sans">{text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* ════════════════════════════ THE STORY ════════════════════════════ */}
+      <section
+        id="story"
+        ref={storyReveal.ref as React.RefObject<HTMLElement>}
+        className={`section-reveal py-24 md:py-36 px-6 ${storyReveal.revealed ? 'revealed' : ''}`}
+        style={{ background: 'var(--charcoal)' }}
+      >
+        <div className="max-w-6xl mx-auto">
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 3. VIDEO — contained card, same MCS treatment as trailer         */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 bg-studio-charcoal">
-        <div className="mx-auto max-w-4xl">
-          <div className="text-center mb-10">
-            <Badge variant="outline" className="mb-4 text-[10px] tracking-widest uppercase">
-              Official Video
-            </Badge>
-            <h2 className="font-display text-4xl md:text-5xl text-cream">
-              Watch the campaign
-            </h2>
+          <div className="flex items-center gap-4 mb-12">
+            <div className="gold-divider" />
+            <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: 'var(--gold)' }}>
+              The Story
+            </span>
           </div>
 
-          {/*
-            ── Video placeholder card ──
-            Drop your video file at /public/video/dont-drink-and-dial.mp4
-            or embed a YouTube/Vimeo ID here.
-            Same card treatment as the MCS trailer embed.
-          */}
-          <div
-            className="relative aspect-video rounded-sm overflow-hidden border border-studio-border/60 bg-studio-dark shadow-2xl"
-            style={{ boxShadow: "0 0 80px rgba(0,0,0,0.8), 0 0 30px rgba(29,158,117,0.04)" }}
-          >
-            {/*
-              Replace this placeholder with:
-                <video src="/video/dont-drink-and-dial.mp4" controls poster="/images/video-thumb.jpg"
-                  className="absolute inset-0 w-full h-full object-cover" />
-              Or YouTube embed:
-                <iframe src="https://www.youtube.com/embed/YOUR_ID?rel=0" ... />
-            */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-5">
-              {/* Rasta gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#0a1a10] via-[#0d0c08] to-[#1a0d06] opacity-80" />
-              <div className="relative z-10 flex flex-col items-center gap-4">
-                <div className="w-16 h-16 rounded-full border border-gold/30 bg-studio-black/60 flex items-center justify-center">
-                  <Play className="w-7 h-7 text-gold/60 ml-1" />
-                </div>
-                <div className="text-center">
-                  <p className="font-display text-xl text-cream/70 italic">Don&apos;t Drink &amp; Dial Decades</p>
-                  <p className="text-mist/40 text-xs mt-1">Drop your video file at /public/video/ or embed YouTube/Vimeo</p>
-                </div>
-                {/* Rasta color dots */}
-                <div className="flex gap-2">
-                  <div className="w-2 h-2 rounded-full bg-rasta-red animate-pulse" />
-                  <div className="w-2 h-2 rounded-full bg-rasta-gold animate-pulse delay-200" />
-                  <div className="w-2 h-2 rounded-full bg-rasta-green animate-pulse delay-400" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <p className="text-center text-mist/50 text-xs mt-4 tracking-wide">
-            Original track by Pat Smith · Produced by Donny Markowitz &amp; Gary Uffner
-          </p>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 4. MEET LIL SQUIGGLE — proper prose layout                       */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <section id="story" className="py-20 px-6 border-t border-studio-border/40">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid md:grid-cols-[1fr_380px] gap-16 items-center">
-
-            {/* Text — constrained, breathable, MCS-style */}
-            <div className="space-y-6">
-              <div>
-                <Badge variant="outline" className="mb-4 text-[10px] tracking-widest uppercase">
-                  The Story
-                </Badge>
-                <h2 className="font-display text-4xl md:text-5xl text-cream leading-tight">
-                  Meet{" "}
-                  <span className="text-gold-gradient italic">Lil Squiggle</span>
-                </h2>
-              </div>
-
-              <Separator className="w-12 bg-rasta-green/40" />
-
-              {/* Prose — max line length controlled by the column width, not raw text */}
-              <div className="space-y-4 text-mist text-sm leading-relaxed">
-                <p>
-                  He&apos;s small, he&apos;s chibi, he&apos;s got Rasta colors and zero impulse control.
-                  Lil Squiggle is the reggae-dub character who somehow finds himself making
-                  the worst possible phone call — in every decade, on every device.
-                </p>
-                <p>
-                  1970s rotary? He&apos;s spinning it. 1990s flip phone? Snap.
-                  Modern smartphone with face ID, read receipts, and zero plausible
-                  deniability? Also him.
-                </p>
-              </div>
-
-              {/* Pull quote — same treatment as MCS blockquote */}
-              <div className="border-l-2 border-rasta-gold pl-5 py-1">
-                <p className="font-display text-lg text-cream/80 italic">
-                  &ldquo;One call. Every era. Same regret.&rdquo;
-                </p>
-              </div>
-
-              {/* Credits — MCS production style */}
-              <div className="pt-2 space-y-1.5">
-                <p className="text-[10px] tracking-[0.2em] uppercase text-rasta-green/80 font-sans mb-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="flex flex-col gap-6">
+              <h2
+                className="font-display leading-tight"
+                style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'var(--cream)', fontWeight: 500 }}
+              >
+                Meet{' '}
+                <span className="italic text-gold-gradient">Lil Squiggle</span>
+              </h2>
+              <p className="text-base leading-relaxed" style={{ color: 'var(--mist)' }}>
+                He's small, he's chibi, he's got Rasta colors and zero impulse control.
+                Lil Squiggle is the reggae-dub character who somehow finds himself making
+                the worst possible phone call — in every decade, on every device.
+              </p>
+              <p className="text-base leading-relaxed" style={{ color: 'var(--mist)' }}>
+                1970s rotary? He's spinning it. 1990s flip phone? Snap. Modern smartphone
+                with face ID, read receipts, and zero plausible deniability? Also him.
+              </p>
+              <p
+                className="font-display text-xl italic font-light leading-relaxed"
+                style={{ color: 'var(--gold)', borderLeft: '2px solid rgba(212,175,119,0.3)', paddingLeft: '1.25rem' }}
+              >
+                "One call. Every era. Same regret."
+              </p>
+              <div className="flex flex-col gap-1.5 pt-1">
+                <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--gold-dim)' }}>
                   A Mid City Sound Production
                 </p>
-                <p className="text-mist text-xs">
-                  Original track by <span className="text-cream">Pat Smith</span>
+                <p className="text-sm" style={{ color: 'var(--mist)' }}>
+                  Written by <span style={{ color: 'var(--cream)' }}>Cash Hollywood & Russ Kunkel</span> · Produced by <span style={{ color: 'var(--cream)' }}>Donald Markowitz & Gary Uffner</span>
                 </p>
-                <p className="text-mist text-xs">
-                  Produced by <span className="text-cream">Donny Markowitz</span> &amp;{" "}
-                  <span className="text-cream">Gary Uffner</span>
+                <p className="text-sm" style={{ color: 'var(--mist)' }}>
+                  Produced by{' '}
+                  <span style={{ color: 'var(--cream)' }}>Donny Markowitz</span>
+                  {' '}&amp;{' '}
+                  <span style={{ color: 'var(--cream)' }}>Gary Uffner</span>
                 </p>
               </div>
-
-              <Button variant="outline" asChild>
-                <Link href="/story">
-                  Full Story &amp; Timeline
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </Button>
             </div>
 
-            {/* Character visual — properly contained card */}
             <div className="relative">
-              {/*
-                Replace this placeholder with the character image:
-                  <Image src="/images/meet-squiggle.png" width={380} height={400}
-                    className="w-full rounded-sm" alt="Lil Squiggle" />
-              */}
-              <div className="aspect-[4/5] border border-studio-border bg-studio-card rounded-sm flex flex-col items-center justify-center gap-4 relative overflow-hidden">
-                {/* Subtle rasta gradient background */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_80%,rgba(29,158,117,0.06),transparent)]" />
-                {/* Corner accents — MCS style */}
-                <div className="absolute top-4 left-4 w-8 h-8 border-t border-l border-rasta-green/40" />
-                <div className="absolute bottom-4 right-4 w-8 h-8 border-b border-r border-rasta-green/40" />
-
-                <div className="relative z-10 text-center space-y-3 px-6">
-                  <div className="flex justify-center gap-1.5 mb-2">
-                    <div className="w-4 h-4 rounded-full bg-rasta-red/60" />
-                    <div className="w-4 h-4 rounded-full bg-rasta-gold/60" />
-                    <div className="w-4 h-4 rounded-full bg-rasta-green/60" />
-                  </div>
-                  <p className="font-display text-2xl text-cream/60 italic">Lil Squiggle</p>
-                  <p className="text-mist/40 text-xs">
-                    Place character image here:
-                    <br />
-                    <code className="text-rasta-green/50 text-[10px]">/public/images/meet-squiggle.png</code>
-                  </p>
-                </div>
+              <div className="gold-border rounded-sm overflow-hidden" style={{ background: 'var(--charcoal-2)' }}>
+                <img
+                  src="/images/three-eras.png"
+                  alt="Lil Squiggle through three eras"
+                  className="w-full h-full object-cover"
+                  style={{ minHeight: '320px' }}
+                />
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 5. THREE ERAS — image in a premium contained frame               */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 bg-studio-charcoal border-y border-studio-border/40">
-        <div className="mx-auto max-w-5xl">
-
-          {/* Section header */}
-          <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4 text-[10px] tracking-widest uppercase">
-              The Campaign
-            </Badge>
-            <h2 className="font-display text-4xl md:text-5xl text-cream">
-              One Guy.{" "}
-              <span className="text-gold-gradient italic">Three Eras.</span>
-              <br />Same Regret.
-            </h2>
-          </div>
-
-          {/*
-            Three eras image card — BEFORE this was just a raw image floating on the page.
-            NOW it has proper containment, padding, border, and shadow.
-          */}
-          <div
-            className="border border-studio-border rounded-sm overflow-hidden shadow-2xl"
-            style={{ boxShadow: "0 0 60px rgba(0,0,0,0.7), 0 0 20px rgba(29,158,117,0.04)" }}
-          >
-            {/* Header bar */}
-            <div className="px-6 py-3 border-b border-studio-border bg-studio-dark flex items-center justify-between">
-              <p className="text-[10px] tracking-[0.2em] uppercase text-mist/50">The Three Eras</p>
-              <div className="flex gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-rasta-red/60" />
-                <div className="w-2 h-2 rounded-full bg-rasta-gold/60" />
-                <div className="w-2 h-2 rounded-full bg-rasta-green/60" />
-              </div>
-            </div>
-
-            {/*
-              Replace placeholder with:
-                <Image src="/images/three-eras.png" width={900} height={400}
-                  className="w-full" alt="One Guy. Three Eras. Same Regret." />
-            */}
-            <div className="aspect-[21/8] bg-studio-dark flex items-center justify-center text-mist/30 text-sm relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(29,158,117,0.05),transparent)]" />
-              <div className="relative z-10 text-center space-y-2">
-                <div className="flex justify-center gap-8 mb-4">
-                  {["1970s", "1990s", "Modern"].map((era, i) => (
-                    <div
-                      key={era}
-                      className={`px-4 py-2 rounded text-sm font-sans font-medium ${
-                        i === 0 ? "era-badge-70s" : i === 1 ? "era-badge-90s" : "era-badge-modern"
-                      }`}
-                    >
-                      {era}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-[11px]">Place three-eras image here:</p>
-                <code className="text-rasta-green/50 text-[10px]">/public/images/three-eras.png</code>
-              </div>
-            </div>
-          </div>
-
-          {/* Era descriptions — properly spaced, contained */}
-          <div className="grid sm:grid-cols-3 gap-4 mt-8">
-            {[
-              {
-                era:    "'70s",
-                device: "Rotary Phone",
-                desc:   "Squiggle spins the dial. Avocado-green kitchen. Same mistake, analog edition.",
-                color:  "border-rasta-red/30 hover:border-rasta-red/50",
-                badge:  "era-badge-70s",
-              },
-              {
-                era:    "'90s",
-                device: "Flip Phone",
-                desc:   "The satisfying snap of a flip. The unsatisfying aftermath of a 2am call.",
-                color:  "border-studio-border hover:border-[#7B2FBE]/50",
-                badge:  "era-badge-90s",
-              },
-              {
-                era:    "Now",
-                device: "Smartphone",
-                desc:   "Face ID. Read receipts. Zero excuses. Maximum regret.",
-                color:  "border-rasta-green/30 hover:border-rasta-green/50",
-                badge:  "era-badge-modern",
-              },
-            ].map(({ era, device, desc, color, badge }) => (
               <div
-                key={era}
-                className={`p-5 border bg-studio-card rounded-sm transition-all card-lift ${color}`}
+                className="absolute -bottom-4 -right-4 px-5 py-3 rounded-sm"
+                style={{ background: 'var(--charcoal-3)', border: '1px solid rgba(212,175,119,0.25)' }}
               >
-                <div className={`inline-block px-2 py-0.5 rounded text-[10px] font-sans font-medium mb-3 ${badge}`}>
-                  {era}
+                <p className="text-[9px] uppercase tracking-widest" style={{ color: 'var(--mist)' }}>Campaign</p>
+                <p className="font-display text-sm font-medium" style={{ color: 'var(--gold)' }}>#DontDrinkAndDialDecades</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Era cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-20">
+            {eras.map((era, i) => (
+              <div
+                key={era.decade}
+                className="relative p-6 rounded-sm gold-border flex flex-col gap-3 transition-all duration-300 hover:border-[rgba(212,175,119,0.4)]"
+                style={{ background: 'var(--charcoal-2)', transitionDelay: `${i * 80}ms` }}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-display text-3xl font-semibold italic" style={{ color: 'var(--gold)' }}>
+                    '{era.decade}
+                  </span>
+                  <span className="text-2xl">{era.glyph}</span>
                 </div>
-                <p className="text-[10px] tracking-widest uppercase text-mist/50 mb-1.5">{device}</p>
-                <p className="text-cream text-sm leading-relaxed">{desc}</p>
+                <p className="text-[10px] uppercase tracking-[0.25em]" style={{ color: 'var(--green)' }}>
+                  {era.device}
+                </p>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--mist)' }}>
+                  {era.desc}
+                </p>
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-px"
+                  style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,119,0.2), transparent)' }}
+                />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 6. MUSIC — track section                                         */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
+      {/* ═══════════════════════ SHOP / UNIFIED MERCH ══════════════════════ */}
+      <section
+        id="shop"
+        ref={shopReveal.ref as React.RefObject<HTMLElement>}
+        className={`section-reveal py-24 md:py-36 px-6 noise-overlay relative ${shopReveal.revealed ? 'revealed' : ''}`}
+        style={{
+          background: 'radial-gradient(ellipse 80% 50% at 50% 50%, #131008 0%, var(--black) 70%)',
+        }}
+      >
+        <div className="max-w-6xl mx-auto relative z-10">
 
-            {/* Track card */}
-            <div className="border border-studio-border bg-studio-card rounded-sm p-7 space-y-5">
-              <div className="flex items-start gap-4">
-                {/* Album art placeholder */}
-                <div className="w-16 h-16 rounded-sm border border-studio-border bg-studio-dark flex items-center justify-center shrink-0">
-                  <Music className="w-6 h-6 text-rasta-green/50" />
-                </div>
-                <div>
-                  <Badge variant="outline" className="mb-2 text-[9px]">Original Track</Badge>
-                  <p className="font-display text-xl text-cream leading-tight">
-                    Don&apos;t Drink &amp; Dial Decades
-                  </p>
-                  <p className="text-mist text-xs mt-0.5">Lil Squiggle · Reggae-Dub</p>
-                </div>
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="gold-divider" />
+                <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: 'var(--gold)' }}>
+                  The Drop
+                </span>
               </div>
-
-              {/* Fake waveform — decorative */}
-              <div className="flex items-center gap-[2px] h-8">
-                {Array.from({ length: 60 }).map((_, i) => {
-                  const h = Math.abs(Math.sin(i * 0.4)) * 18 + 4
-                  return (
-                    <div
-                      key={i}
-                      className="rounded-[1px] flex-shrink-0 bg-studio-border"
-                      style={{ width: "2.5px", height: `${h}px` }}
-                    />
-                  )
-                })}
-              </div>
-
-              <div className="flex items-center justify-between pt-1">
-                <div className="space-y-0.5">
-                  <p className="text-mist text-xs">Written by <span className="text-cream">Pat Smith</span></p>
-                  <p className="text-mist text-xs">Produced by <span className="text-cream">Donny Markowitz</span> &amp; <span className="text-cream">Gary Uffner</span></p>
-                </div>
-                <Button size="sm" variant="outline" asChild>
-                  <Link href="/music">Listen</Link>
-                </Button>
-              </div>
+              <h2
+                className="font-display leading-tight"
+                style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: 'var(--cream)', fontWeight: 500 }}
+              >
+                Shop Lil Squiggle
+                <br />
+                <span className="italic text-gold-gradient">+ Mid City Sound Merch</span>
+              </h2>
+              <p className="text-sm mt-4 max-w-md leading-relaxed" style={{ color: 'var(--mist)' }}>
+                Lil Squiggle drops live alongside the full Mid City Sound and Streetbeats
+                collections. One store. Three brands. Limitless regret.
+              </p>
             </div>
+            <a
+              href={MERCH_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold self-start md:self-end shrink-0 text-[#090909] font-semibold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-sm"
+            >
+              Shop Everything ↗
+            </a>
+          </div>
+
+          {/* Brand label strip */}
+          <div
+            className="flex flex-wrap items-center gap-3 mb-10 p-4 rounded-sm"
+            style={{ background: 'rgba(212,175,119,0.04)', border: '1px solid rgba(212,175,119,0.12)' }}
+          >
+            <span className="text-[9px] uppercase tracking-[0.3em] mr-1" style={{ color: 'var(--mist)' }}>
+              All at midcitysound.com/merch:
+            </span>
+            {[
+              { brand: 'Lil Squiggle', green: true },
+              { brand: 'Mid City Sound', green: false },
+              { brand: 'Streetbeats', green: false },
+            ].map(({ brand, green }) => (
+              <span
+                key={brand}
+                className="text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full"
+                style={{
+                  background: green ? 'rgba(29,158,117,0.12)' : 'rgba(212,175,119,0.08)',
+                  color: green ? 'var(--green)' : 'var(--gold)',
+                  border: `1px solid ${green ? 'rgba(29,158,117,0.25)' : 'rgba(212,175,119,0.2)'}`,
+                }}
+              >
+                {brand}
+              </span>
+            ))}
+          </div>
+
+          {/* Teaser product grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {teaserProducts.map((product) => (
+              <a
+                key={product.name}
+                href={MERCH_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="product-card gold-border rounded-sm p-5 flex flex-col gap-4 group"
+                style={{ background: 'var(--charcoal)', textDecoration: 'none' }}
+              >
+                {/* Placeholder image area */}
+                <div
+                  className="w-full aspect-square rounded-sm flex items-center justify-center relative overflow-hidden"
+                  style={{ background: 'var(--charcoal-2)' }}
+                >
+                  <div className="flex flex-col items-center gap-2 opacity-40">
+                    <div
+                      className="w-14 h-14 rounded-full"
+                      style={{
+                        background: `radial-gradient(circle, ${product.color}33, transparent)`,
+                        border: `1px solid ${product.color}44`,
+                      }}
+                    />
+                  </div>
+                  <span
+                    className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.2em] px-2 py-1 rounded-full"
+                    style={{
+                      background: product.accent ? 'rgba(29,158,117,0.15)' : 'rgba(212,175,119,0.1)',
+                      color: product.accent ? 'var(--green)' : 'var(--gold)',
+                      border: `1px solid ${product.accent ? 'rgba(29,158,117,0.3)' : 'rgba(212,175,119,0.2)'}`,
+                    }}
+                  >
+                    {product.label}
+                  </span>
+                  {product.tag && (
+                    <span
+                      className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded-sm"
+                      style={{ background: 'rgba(9,9,9,0.7)', color: 'var(--mist)', backdropFilter: 'blur(4px)' }}
+                    >
+                      {product.tag}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-display text-base font-medium leading-tight" style={{ color: 'var(--cream)' }}>
+                      {product.name}
+                    </h3>
+                    <span className="font-display text-base font-semibold shrink-0" style={{ color: 'var(--gold)' }}>
+                      {product.price}
+                    </span>
+                  </div>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--mist)' }}>
+                    {product.desc}
+                  </p>
+                </div>
+
+                <div className="mt-auto flex items-center gap-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: 'var(--gold-dim)' }}>
+                  <span className="group-hover:text-[var(--gold)] transition-colors duration-300">View at MCS ↗</span>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          {/* Bottom CTA band */}
+          <div
+            className="mt-10 p-6 md:p-8 rounded-sm flex flex-col md:flex-row items-center justify-between gap-5"
+            style={{
+              background: 'linear-gradient(135deg, rgba(212,175,119,0.07) 0%, rgba(212,175,119,0.03) 100%)',
+              border: '1px solid rgba(212,175,119,0.2)',
+            }}
+          >
+            <div>
+              <p className="font-display text-xl italic font-light" style={{ color: 'var(--cream)' }}>
+                The full collection is live.
+              </p>
+              <p className="text-sm mt-1" style={{ color: 'var(--mist)' }}>
+                Every drop from every era, plus the full Mid City Sound catalog.
+              </p>
+            </div>
+            <a
+              href={MERCH_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold shrink-0 text-[#090909] font-semibold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-sm whitespace-nowrap"
+            >
+              midcitysound.com/merch ↗
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════ UGC ════════════════════════════════ */}
+      <section
+        id="community"
+        ref={ugcReveal.ref as React.RefObject<HTMLElement>}
+        className={`section-reveal py-24 md:py-36 px-6 ${ugcReveal.revealed ? 'revealed' : ''}`}
+        style={{ background: 'var(--charcoal)' }}
+      >
+        <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-8">
+
+          <div className="flex items-center gap-4">
+            <div className="gold-divider" />
+            <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: 'var(--gold)' }}>
+              Community
+            </span>
+            <div className="gold-divider" />
+          </div>
+
+          <h2
+            className="font-display leading-tight"
+            style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', color: 'var(--cream)', fontWeight: 500 }}
+          >
+            Join the{' '}
+            <span className="italic text-gold-gradient">Era</span>
+          </h2>
+
+          <p className="text-base max-w-xl leading-relaxed" style={{ color: 'var(--mist)' }}>
+            Share your worst decade-appropriate drunk dial story. Tag us.
+            Use the hashtag. Lil Squiggle will feel slightly less alone.
+          </p>
+
+          <div
+            className="w-full max-w-lg px-8 py-8 rounded-sm"
+            style={{ background: 'var(--charcoal-2)', border: '1px solid rgba(212,175,119,0.2)' }}
+          >
+            <p className="font-display text-2xl md:text-3xl italic font-light" style={{ color: 'var(--gold)' }}>
+              #DontDrinkAndDialDecades
+            </p>
+            <p className="text-xs mt-2 uppercase tracking-widest" style={{ color: 'var(--mist)' }}>
+              Tag your era. Own your regret.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-2">
+            {[
+              { label: 'TikTok',    handle: '@lilsquigglemon', href: 'https://tiktok.com/@lilsquigglemon',   accent: 'var(--green)' },
+              { label: 'Instagram', handle: '@lil.squiggle',   href: 'https://instagram.com/lil.squiggle',  accent: 'var(--gold)' },
+              { label: 'YouTube',   handle: '@lilsquigglemon', href: 'https://youtube.com/@lilsquigglemon', accent: 'var(--gold)' },
+              { label: 'X',         handle: '@lilsquigglemon', href: 'https://x.com/lilsquigglemon',        accent: 'var(--mist)' },
+            ].map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-5 py-3 rounded-sm transition-all duration-300 group"
+                style={{
+                  background: 'var(--charcoal-3)',
+                  border: '1px solid rgba(212,175,119,0.15)',
+                  color: 'var(--mist)',
+                  textDecoration: 'none',
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget
+                  el.style.borderColor = 'rgba(212,175,119,0.4)'
+                  el.style.color = 'var(--cream)'
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget
+                  el.style.borderColor = 'rgba(212,175,119,0.15)'
+                  el.style.color = 'var(--mist)'
+                }}
+              >
+                <span className="text-[9px] uppercase tracking-[0.2em] font-medium" style={{ color: s.accent }}>
+                  {s.label}
+                </span>
+                <span className="text-sm">{s.handle}</span>
+                <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200">↗</span>
+              </a>
+            ))}
+          </div>
+
+          <a
+            href="https://midcitysound.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 btn-outline-gold text-xs uppercase tracking-[0.25em] px-7 py-3 rounded-sm"
+            style={{ color: 'var(--gold)' }}
+          >
+            Explore Mid City Sound ↗
+          </a>
+        </div>
+      </section>
+
+      {/* ══════════════════════════ MCS BRAND BRIDGE ═══════════════════════ */}
+      <section
+        className="py-16 md:py-20 px-6"
+        style={{
+          background: 'var(--black)',
+          borderTop: '1px solid rgba(212,175,119,0.1)',
+        }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <div
+            className="relative rounded-sm overflow-hidden p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-12"
+            style={{
+              background: 'linear-gradient(135deg, #141008 0%, #0e0e0e 60%, #0a1208 100%)',
+              border: '1px solid rgba(212,175,119,0.2)',
+            }}
+          >
+            {/* Ambient glow */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: 'radial-gradient(ellipse 60% 80% at 0% 50%, rgba(212,175,119,0.06) 0%, transparent 60%)',
+              }}
+            />
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: 'radial-gradient(ellipse 40% 60% at 100% 50%, rgba(29,158,117,0.04) 0%, transparent 60%)',
+              }}
+            />
 
             {/* Text */}
-            <div className="space-y-5">
-              <Badge variant="outline" className="text-[10px] tracking-widest uppercase">
-                The Music
-              </Badge>
-              <h2 className="font-display text-4xl text-cream leading-tight">
-                The sound
-                <br />
-                <span className="text-rasta-gradient italic">behind the call</span>
-              </h2>
-              <Separator className="w-10 bg-rasta-green/40" />
-              <p className="text-mist text-sm leading-relaxed">
-                The original reggae-dub track written by Pat Smith and produced at Mid City Sound
-                Studios in New Orleans — a sound that carries the weight of every bad decision
-                Lil Squiggle has ever made across every decade.
+            <div className="relative flex flex-col gap-3 flex-1 text-center md:text-left">
+              <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: 'var(--gold)' }}>
+                Part of the Mid City Sound family
               </p>
-              <Button asChild>
-                <Link href="/music">
-                  Hear the Track
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* 7. SHOP / MERCH CTA — clean, premium, MCS-style                  */}
-      {/* ════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 border-t border-studio-border/40 bg-studio-charcoal">
-        <div className="mx-auto max-w-5xl">
-          <div className="border border-studio-border/60 rounded-sm overflow-hidden grid md:grid-cols-[1fr_auto] items-center"
-            style={{ boxShadow: "0 0 40px rgba(0,0,0,0.5)" }}
-          >
-            <div className="p-10 space-y-5">
-              <Badge variant="outline" className="text-[10px] tracking-widest uppercase">
-                Shop the Drop
-              </Badge>
-              <h2 className="font-display text-4xl text-cream leading-tight">
-                Wear the
-                <br />
-                <span className="text-gold-gradient italic">regret</span>
-              </h2>
-              <p className="text-mist text-sm leading-relaxed max-w-sm">
-                Official Lil Squiggle merch — tees, hats, stickers, and more.
-                Fulfilled via Printful. Ships worldwide.
+              <h3
+                className="font-display leading-tight"
+                style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: 'var(--cream)', fontWeight: 500 }}
+              >
+                Three Brands.{' '}
+                <span className="italic text-gold-gradient">One Studio.</span>
+              </h3>
+              <p className="text-sm leading-relaxed max-w-md" style={{ color: 'var(--mist)' }}>
+                Lil Squiggle lives inside the Mid City Sound universe alongside the full
+                studio catalog and Streetbeats. All merch — all eras — lives in one place.
               </p>
-              <div className="flex gap-3">
-                <Button asChild>
-                  <Link href="/merch">
-                    <ShoppingBag className="w-4 h-4" />
-                    Shop All Products
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link
-                    href="https://store.lilsquiggle.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
+              <div className="flex flex-wrap gap-2 mt-1 justify-center md:justify-start">
+                {['Lil Squiggle', 'Mid City Sound', 'Streetbeats'].map((brand, i) => (
+                  <span
+                    key={brand}
+                    className="text-[9px] uppercase tracking-[0.2em] px-3 py-1 rounded-full"
+                    style={{
+                      background: i === 0 ? 'rgba(29,158,117,0.1)' : 'rgba(212,175,119,0.07)',
+                      color: i === 0 ? 'var(--green)' : 'var(--gold)',
+                      border: `1px solid ${i === 0 ? 'rgba(29,158,117,0.25)' : 'rgba(212,175,119,0.18)'}`,
+                    }}
                   >
-                    Full Store
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </Button>
+                    {brand}
+                  </span>
+                ))}
               </div>
             </div>
 
-            {/* Product visual placeholder */}
-            <div className="hidden md:flex border-l border-studio-border bg-studio-dark p-10 items-center justify-center min-w-[220px]">
-              <div className="text-center space-y-3">
-                <div className="w-20 h-20 mx-auto border border-studio-border rounded-sm bg-studio-card flex items-center justify-center">
-                  <ShoppingBag className="w-8 h-8 text-rasta-green/40" />
-                </div>
-                <p className="text-mist/40 text-[10px] tracking-widest uppercase">Coming Soon</p>
-              </div>
+            {/* CTA stack */}
+            <div className="relative flex flex-col gap-3 shrink-0 w-full md:w-auto">
+              <a
+                href="https://midcitysound.com/merch"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gold text-[#090909] font-semibold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-sm text-center whitespace-nowrap"
+              >
+                Shop All Merch ↗
+              </a>
+              <a
+                href="https://midcitysound.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-outline-gold text-xs uppercase tracking-[0.2em] px-8 py-3.5 rounded-sm text-center whitespace-nowrap"
+                style={{ color: 'var(--mist)' }}
+              >
+                midcitysound.com ↗
+              </a>
             </div>
           </div>
         </div>
       </section>
+
+      <Footer />
     </>
   )
 }
