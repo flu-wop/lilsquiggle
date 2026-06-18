@@ -1,9 +1,6 @@
-// src/app/story/page.tsx
-// Premium story/timeline layout — fixes the broken prose of the original.
-// Max content width, generous whitespace, proper type hierarchy throughout.
-
 import type { Metadata } from "next"
-import Link              from "next/link"
+import Image from "next/image"
+import Link from "next/link"
 import { ArrowRight, ShoppingBag } from "lucide-react"
 import { Button }    from "@/components/ui/button"
 import { Badge }     from "@/components/ui/badge"
@@ -11,7 +8,7 @@ import { Separator } from "@/components/ui/separator"
 
 export const metadata: Metadata = {
   title:       "The Story",
-  description: "Meet Lil Squiggle — the reggae-dub chibi character who makes the worst possible call in every decade.",
+  description: "Meet Lil Squiggle — the reggae-dub chibi character who makes the worst possible call in every decade. Sung by Pat Smith, feat. Cash Hollywood.",
 }
 
 const ERAS = [
@@ -25,6 +22,7 @@ const ERAS = [
     accent:  "text-rasta-red",
     badge:   "era-badge-70s",
     icon:    "📞",
+    img:     "/images/era-70s.png",
   },
   {
     id:      "90s",
@@ -36,6 +34,7 @@ const ERAS = [
     accent:  "text-[#B060FF]",
     badge:   "era-badge-90s",
     icon:    "📱",
+    img:     "/images/alternate-squiggle.png",
   },
   {
     id:      "modern",
@@ -47,6 +46,7 @@ const ERAS = [
     accent:  "text-rasta-green",
     badge:   "era-badge-modern",
     icon:    "📲",
+    img:     "/images/era-modern.png",
   },
 ]
 
@@ -54,22 +54,16 @@ export default function StoryPage() {
   return (
     <div className="pt-16 min-h-screen bg-studio-black">
 
-      {/* ── Page header — same pattern as every MCS inner page ── */}
       <section className="py-20 px-6 border-b border-studio-border/40 bg-studio-charcoal">
         <div className="mx-auto max-w-5xl">
-
-          {/* Rasta bar — Lil Squiggle's version of the MCS gold divider */}
           <div className="rasta-divider w-14 mb-8" />
-
           <Badge variant="outline" className="mb-4 text-[10px] tracking-widest uppercase">
             The Story
           </Badge>
           <h1 className="font-display text-5xl md:text-6xl text-cream mb-5 leading-tight">
-            Meet{" "}
-            <span className="text-gold-gradient italic">Lil Squiggle</span>
+            One character who can&apos;t{" "}
+            <span className="text-gold-gradient italic">stop dialing</span>
           </h1>
-
-          {/* Constrained intro prose — THIS was the main problem before */}
           <div className="max-w-2xl space-y-4 text-mist text-sm leading-relaxed">
             <p>
               He&apos;s small, he&apos;s chibi, he&apos;s got Rasta colors and zero impulse control.
@@ -81,8 +75,6 @@ export default function StoryPage() {
               Modern smartphone with face ID, read receipts, and zero plausible deniability? Also him.
             </p>
           </div>
-
-          {/* Pull quote — properly styled, not just floating italic text */}
           <div className="border-l-2 border-rasta-gold pl-5 py-2 mt-6 max-w-md">
             <p className="font-display text-xl text-cream/80 italic">
               &ldquo;One call. Every era. Same regret.&rdquo;
@@ -91,16 +83,16 @@ export default function StoryPage() {
         </div>
       </section>
 
-      {/* ── Production credits — MCS-quality presentation ── */}
+      {/* Production credits */}
       <section className="py-12 px-6 border-b border-studio-border/40">
         <div className="mx-auto max-w-5xl">
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { label: "Original Track by", name: "Pat Smith",                       sub: "Writer" },
-              { label: "Produced by",       name: "Donny Markowitz & Gary Uffner",   sub: "Mid City Sound Studios" },
-              { label: "Campaign",          name: "#DontDrinkAndDialDecades",         sub: "Lil Squiggle Universe" },
+              { label: "Sung by",   name: "Pat Smith",                    sub: "Vocalist" },
+              { label: "Feat.",     name: "Cash Hollywood",               sub: "Featured Artist" },
+              { label: "Produced by", name: "Donny Markowitz & Gary Uffner", sub: "Mid City Sound Studios" },
             ].map(({ label, name, sub }) => (
-              <div key={label} className="p-5 border border-studio-border bg-studio-card rounded-sm">
+              <div key={label} className="p-5 border border-studio-border bg-studio-card rounded-sm card-lift">
                 <p className="text-[10px] tracking-[0.18em] uppercase text-mist/50 mb-1.5">{label}</p>
                 <p className="text-cream font-medium text-sm">{name}</p>
                 <p className="text-mist/50 text-[11px] mt-0.5">{sub}</p>
@@ -110,7 +102,7 @@ export default function StoryPage() {
         </div>
       </section>
 
-      {/* ── Three-eras image — contained in proper frame ── */}
+      {/* Three-eras hero image */}
       <section className="py-20 px-6 bg-studio-charcoal border-b border-studio-border/40">
         <div className="mx-auto max-w-5xl">
           <div className="text-center mb-10">
@@ -120,9 +112,7 @@ export default function StoryPage() {
               {" "}Same Regret.
             </h2>
           </div>
-
-          {/* Contained image card */}
-          <div className="border border-studio-border rounded-sm overflow-hidden">
+          <div className="border border-studio-border rounded-sm overflow-hidden card-lift">
             <div className="px-5 py-3 border-b border-studio-border bg-studio-dark flex items-center justify-between">
               <p className="text-[10px] tracking-[0.18em] uppercase text-mist/50">Campaign Art</p>
               <div className="flex gap-1.5">
@@ -131,22 +121,18 @@ export default function StoryPage() {
                 <div className="w-2 h-2 rounded-full bg-rasta-green/50" />
               </div>
             </div>
-            {/*
-              Drop your three-eras.png here:
-                <Image src="/images/three-eras.png" width={900} height={380}
-                  className="w-full" alt="One Guy. Three Eras. Same Regret." />
-            */}
-            <div className="aspect-[21/8] bg-studio-dark flex items-center justify-center text-mist/30 text-sm">
-              <div className="text-center space-y-2">
-                <p>three-eras.png</p>
-                <code className="text-rasta-green/40 text-[10px]">/public/images/three-eras.png</code>
-              </div>
-            </div>
+            <Image
+              src="/images/three-eras.png"
+              width={1200}
+              height={500}
+              alt="One Guy. Three Eras. Same Regret."
+              className="w-full h-auto"
+            />
           </div>
         </div>
       </section>
 
-      {/* ── Era deep-dives — timeline format, MCS legacy page style ── */}
+      {/* Era deep-dives */}
       <section className="py-20 px-6">
         <div className="mx-auto max-w-5xl">
           <div className="text-center mb-14">
@@ -154,31 +140,24 @@ export default function StoryPage() {
               The Timeline
             </Badge>
             <h2 className="font-display text-4xl text-cream">
-              Every era, the same call
+              Every era, the same <span className="italic text-gold-gradient">call</span>
             </h2>
           </div>
 
-          {/* Timeline — mirrors MCS /legacy page structure */}
           <div className="relative">
-            {/* Vertical line */}
             <div className="absolute left-7 top-0 bottom-0 w-px bg-studio-border hidden md:block" />
-
             <div className="space-y-0">
-              {ERAS.map(({ id, era, device, setting, desc, color, accent, badge, icon }) => (
+              {ERAS.map(({ id, era, device, setting, desc, color, badge, icon, img }) => (
                 <div key={id} className="relative flex gap-0 md:gap-8 pb-14 last:pb-0 flex-col md:flex-row">
-
-                  {/* Era node — mirrors MCS timeline icon nodes */}
                   <div className="relative z-10 flex-shrink-0 hidden md:block">
                     <div className={`w-14 h-14 rounded-full border bg-studio-dark flex items-center justify-center text-xl ${color}`}>
                       {icon}
                     </div>
                   </div>
-
-                  {/* Content card */}
                   <div className={`flex-1 border bg-studio-card rounded-sm overflow-hidden transition-all card-lift ${color}`}>
                     <div className="px-6 py-3 border-b border-studio-border/40 bg-studio-dark flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className={`text-sm mr-1 md:hidden`}>{icon}</span>
+                        <span className="text-sm mr-1 md:hidden">{icon}</span>
                         <div className={`inline-block px-2 py-0.5 rounded text-[10px] font-sans font-medium ${badge}`}>
                           {era}
                         </div>
@@ -186,8 +165,13 @@ export default function StoryPage() {
                       </div>
                       <span className="text-[10px] text-mist/30 italic">{setting}</span>
                     </div>
-                    <div className="p-6">
-                      <p className="text-mist text-sm leading-relaxed">{desc}</p>
+                    <div className="grid md:grid-cols-[180px_1fr] gap-0">
+                      <div className="relative aspect-square md:aspect-auto overflow-hidden">
+                        <Image src={img} alt={`Lil Squiggle ${era}`} fill className="object-cover" />
+                      </div>
+                      <div className="p-6 flex items-center">
+                        <p className="text-mist text-sm leading-relaxed">{desc}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -197,11 +181,12 @@ export default function StoryPage() {
         </div>
       </section>
 
-      {/* ── CTA footer for this page ── */}
+      {/* CTA footer */}
       <section className="py-16 px-6 border-t border-studio-border/40 bg-studio-charcoal">
         <div className="mx-auto max-w-xl text-center space-y-5">
-          <h2 className="font-display text-3xl text-cream">Ready to shop?</h2>
-          <p className="text-mist text-sm">Official Lil Squiggle merch — wear the regret.</p>
+          <h2 className="font-display text-3xl text-cream">Wear the <span className="italic text-gold-gradient">regret</span></h2>
+          <p className="text-mist text-sm">Official Lil Squiggle merch — shipped from Mid City Sound.</p>
+          <p className="text-mist/50 text-xs">No account needed · Ships in 3–5 days</p>
           <div className="flex gap-3 justify-center">
             <Button asChild>
               <Link href="/merch">
