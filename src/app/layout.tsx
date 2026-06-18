@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
@@ -11,11 +10,11 @@ export const metadata: Metadata = {
   },
   description:
     "One call. Every era. Same regret. The reggae-dub chibi Lego campaign from Mid City Sound Studios. " +
-    "Original track by Pat Smith. Produced by Donny Markowitz & Gary Uffner.",
+    "Sung by Pat Smith, featuring Cash Hollywood. Produced by Donny Markowitz & Gary Uffner.",
   keywords: [
     "Lil Squiggle", "Don't Drink and Dial", "DontDrinkAndDialDecades",
     "reggae dub", "chibi", "Lego", "Mid City Sound", "New Orleans",
-    "Pat Smith", "Donny Markowitz", "Gary Uffner",
+    "Pat Smith", "Cash Hollywood", "Donny Markowitz", "Gary Uffner",
   ],
   metadataBase: new URL("https://lilsquiggle.vercel.app"),
   icons: { icon: "/favicon.png" },
