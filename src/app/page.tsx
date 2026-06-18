@@ -132,12 +132,12 @@ export default function Home() {
         <div className="absolute inset-0 vignette pointer-events-none" />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto pt-20">
+        <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 max-w-4xl mx-auto pt-20 w-full">
 
           {/* MCS badge */}
           <div className="animate-fade-in mb-8">
             <a href="https://midcitysound.com" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-5 py-2.5 rounded-sm group"
+              className="inline-flex flex-wrap items-center justify-center gap-2 px-4 py-2.5 rounded-sm group"
               style={{ border: '1px solid rgba(212,175,119,0.25)', background: 'rgba(9,9,9,0.55)', backdropFilter: 'blur(12px)' }}>
               <span className="text-[9px] uppercase tracking-[0.4em]" style={{ color: 'var(--color-mist)' }}>Mid City Sound Presents</span>
               <div className="w-px h-3" style={{ background: 'rgba(212,175,119,0.3)' }} />
@@ -150,11 +150,11 @@ export default function Home() {
 
           {/* Main title */}
           <h1 className="animate-fade-up font-display text-gold-gradient leading-[0.9] tracking-tight"
-            style={{ fontSize: 'clamp(3.5rem, 12vw, 9rem)', fontWeight: 600 }}>
+            style={{ fontSize: 'clamp(2.6rem, 11vw, 9rem)', fontWeight: 600 }}>
             Don&apos;t Drink
           </h1>
           <h1 className="animate-fade-up delay-100 font-display italic font-light leading-[0.9] tracking-tight mb-4"
-            style={{ fontSize: 'clamp(3.5rem, 12vw, 9rem)', color: 'var(--color-cream)' }}>
+            style={{ fontSize: 'clamp(2.6rem, 11vw, 9rem)', color: 'var(--color-cream)' }}>
             &amp; Dial
           </h1>
           <p className="animate-fade-up delay-200 font-display text-lg md:text-2xl italic tracking-[0.3em] mb-6"
@@ -165,18 +165,18 @@ export default function Home() {
           {/* Tagline */}
           <div className="animate-fade-up delay-300 flex items-center gap-4 mb-10">
             <div className="gold-divider" />
-            <span className="text-[10px] uppercase tracking-[0.4em] whitespace-nowrap" style={{ color: 'var(--color-mist)' }}>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-center" style={{ color: 'var(--color-mist)' }}>
               One call. Every era. Same regret.
             </span>
             <div className="gold-divider" />
           </div>
 
           {/* CTAs */}
-          <div className="animate-fade-up delay-400 flex flex-col sm:flex-row gap-3 mb-3">
-            <a href={MERCH_URL} target="_blank" rel="noopener noreferrer" className="btn-gold">
+          <div className="animate-fade-up delay-400 flex flex-col sm:flex-row gap-3 mb-3 w-full sm:w-auto px-4 sm:px-0">
+            <a href={MERCH_URL} target="_blank" rel="noopener noreferrer" className="btn-gold w-full sm:w-auto justify-center">
               Shop the Drop ↗
             </a>
-            <a href="#story" className="btn-outline-gold">
+            <a href="#story" className="btn-outline-gold w-full sm:w-auto justify-center">
               The Story ↓
             </a>
           </div>
@@ -192,25 +192,36 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════════════════════ CAMPAIGN ART ═════════════════════════════ */}
-      <section style={{ background: 'var(--color-charcoal)', borderTop: '1px solid rgba(212,175,119,0.08)' }}>
-        <div className="max-w-5xl mx-auto px-6 py-16 md:py-20">
+      {/* ══════════════════════════════ VIDEO ════════════════════════════════ */}
+      <section
+        ref={videoReveal.ref as React.RefObject<HTMLElement>}
+        className={`py-20 px-6 transition-all duration-700 ${videoReveal.revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        style={{ background: 'var(--color-black)', borderTop: '1px solid rgba(212,175,119,0.08)' }}
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="gold-divider" />
+            <span className="text-[10px] uppercase tracking-[0.4em]" style={{ color: 'var(--color-gold)' }}>Official PSA</span>
+          </div>
+          <h2 className="font-display mb-8"
+            style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', color: 'var(--color-cream)', fontWeight: 500 }}>
+            Watch before you <span className="italic text-gold-gradient">dial</span>
+          </h2>
           <div className="relative rounded-sm overflow-hidden card-lift"
             style={{ border: '1px solid rgba(212,175,119,0.15)' }}>
-            <div className="px-5 py-3 flex items-center justify-between"
-              style={{ background: 'rgba(9,9,9,0.6)', borderBottom: '1px solid rgba(212,175,119,0.12)' }}>
-              <div className="flex items-center gap-3">
-                <div className="rasta-divider w-6" />
-                <span className="text-[9px] uppercase tracking-[0.3em]" style={{ color: 'var(--color-mist)' }}>Campaign Art</span>
-              </div>
-              <div className="flex gap-1.5">
-                <span className="w-2 h-2 rounded-full" style={{ background: 'rgba(216,90,48,0.6)' }} />
-                <span className="w-2 h-2 rounded-full" style={{ background: 'rgba(239,159,39,0.6)' }} />
-                <span className="w-2 h-2 rounded-full" style={{ background: 'rgba(29,158,117,0.6)' }} />
-              </div>
+            <video src="/video/flip-fails-1.mp4" autoPlay loop muted playsInline
+              className="w-full aspect-video object-cover" />
+            <div className="absolute inset-0 pointer-events-none vignette" />
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+              <span className="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1.5 rounded-sm"
+                style={{ background: 'rgba(9,9,9,0.75)', color: 'var(--color-gold)', backdropFilter: 'blur(8px)' }}>
+                Flip Fails · Official PSA
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1.5 rounded-sm"
+                style={{ background: 'rgba(9,9,9,0.75)', color: 'var(--color-mist)', backdropFilter: 'blur(8px)' }}>
+                #DontDrinkAndDialDecades
+              </span>
             </div>
-            <Image src="/images/three-eras.png" alt="One Guy. Three Eras. Same Regret."
-              width={1200} height={520} className="w-full h-auto" />
           </div>
         </div>
       </section>
@@ -323,40 +334,6 @@ export default function Home() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════ VIDEO ════════════════════════════════ */}
-      <section
-        ref={videoReveal.ref as React.RefObject<HTMLElement>}
-        className={`py-20 px-6 transition-all duration-700 ${videoReveal.revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-        style={{ background: 'var(--color-black)', borderTop: '1px solid rgba(212,175,119,0.08)' }}
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="gold-divider" />
-            <span className="text-[10px] uppercase tracking-[0.4em]" style={{ color: 'var(--color-gold)' }}>Official PSA</span>
-          </div>
-          <h2 className="font-display mb-8"
-            style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', color: 'var(--color-cream)', fontWeight: 500 }}>
-            Watch before you <span className="italic text-gold-gradient">dial</span>
-          </h2>
-          <div className="relative rounded-sm overflow-hidden card-lift"
-            style={{ border: '1px solid rgba(212,175,119,0.15)' }}>
-            <video src="/video/flip-fails-1.mp4" autoPlay loop muted playsInline
-              className="w-full aspect-video object-cover" />
-            <div className="absolute inset-0 pointer-events-none vignette" />
-            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-              <span className="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1.5 rounded-sm"
-                style={{ background: 'rgba(9,9,9,0.75)', color: 'var(--color-gold)', backdropFilter: 'blur(8px)' }}>
-                Flip Fails · Official PSA
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.2em] px-2.5 py-1.5 rounded-sm"
-                style={{ background: 'rgba(9,9,9,0.75)', color: 'var(--color-mist)', backdropFilter: 'blur(8px)' }}>
-                #DontDrinkAndDialDecades
-              </span>
-            </div>
           </div>
         </div>
       </section>
