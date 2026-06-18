@@ -48,13 +48,12 @@ export default function Footer() {
 
   return (
     <footer
-      className="relative gold-border-top"
-      style={{ background: 'var(--charcoal)' }}
+      className="relative"
+      style={{ background: 'var(--color-charcoal)', borderTop: '1px solid rgba(212,175,119,0.15)' }}
     >
-      {/* Top decorative line */}
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px"
-        style={{ background: 'linear-gradient(90deg, transparent, var(--gold), transparent)' }}
+        style={{ background: 'linear-gradient(90deg, transparent, var(--color-gold), transparent)' }}
       />
 
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-16 md:py-20">
@@ -63,32 +62,23 @@ export default function Footer() {
           {/* Brand column */}
           <div className="flex flex-col gap-5">
             <div>
-              <p
-                className="text-[10px] uppercase tracking-[0.3em] mb-2"
-                style={{ color: 'var(--mist)' }}
-              >
+              <p className="text-[10px] uppercase tracking-[0.3em] mb-2" style={{ color: 'var(--color-mist)' }}>
                 Mid City Sound Presents
               </p>
-              <h3
-                className="font-display text-3xl font-semibold"
-                style={{ color: 'var(--gold)' }}
-              >
+              <h3 className="font-display text-3xl font-semibold" style={{ color: 'var(--color-gold)' }}>
                 Lil Squiggle
               </h3>
             </div>
-            <p
-              className="font-display text-base italic font-light leading-relaxed"
-              style={{ color: 'var(--mist)' }}
-            >
-              "One call. Every era. Same regret."
+            <p className="font-display text-base italic font-light leading-relaxed" style={{ color: 'var(--color-mist)' }}>
+              &ldquo;One call. Every era. Same regret.&rdquo;
             </p>
             <div className="gold-divider" />
             <a
               href="mailto:lilsquigglemon@gmail.com"
               className="text-sm transition-colors duration-200"
-              style={{ color: 'var(--mist)' }}
-              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = 'var(--gold)')}
-              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = 'var(--mist)')}
+              style={{ color: 'var(--color-mist)' }}
+              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = 'var(--color-gold)')}
+              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = 'var(--color-mist)')}
             >
               lilsquigglemon@gmail.com
             </a>
@@ -96,10 +86,7 @@ export default function Footer() {
 
           {/* Links column */}
           <div className="flex flex-col gap-5">
-            <h4
-              className="text-[10px] uppercase tracking-[0.25em] font-medium"
-              style={{ color: 'var(--gold)' }}
-            >
+            <h4 className="text-[10px] uppercase tracking-[0.25em] font-medium" style={{ color: 'var(--color-gold)' }}>
               Navigate
             </h4>
             <nav className="flex flex-col gap-3">
@@ -113,9 +100,9 @@ export default function Footer() {
                   key={link.label}
                   href={link.href}
                   className="text-sm transition-colors duration-200 w-fit"
-                  style={{ color: 'var(--mist)' }}
-                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = 'var(--cream)')}
-                  onMouseLeave={(e) => ((e.target as HTMLElement).style.color = 'var(--mist)')}
+                  style={{ color: 'var(--color-mist)' }}
+                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = 'var(--color-cream)')}
+                  onMouseLeave={(e) => ((e.target as HTMLElement).style.color = 'var(--color-mist)')}
                 >
                   {link.label}
                 </a>
@@ -125,10 +112,7 @@ export default function Footer() {
 
           {/* Social column */}
           <div className="flex flex-col gap-5">
-            <h4
-              className="text-[10px] uppercase tracking-[0.25em] font-medium"
-              style={{ color: 'var(--gold)' }}
-            >
+            <h4 className="text-[10px] uppercase tracking-[0.25em] font-medium" style={{ color: 'var(--color-gold)' }}>
               Follow the Era
             </h4>
             <div className="flex flex-col gap-3">
@@ -139,42 +123,35 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 group transition-colors duration-200"
-                  style={{ color: 'var(--mist)' }}
+                  style={{ color: 'var(--color-mist)' }}
                 >
-                  <span
-                    className="transition-colors duration-200 group-hover:text-[var(--gold)]"
-                  >
+                  <span className="transition-colors duration-200 group-hover:text-[var(--color-gold)]">
                     {s.icon}
                   </span>
-                  <span className="text-sm group-hover:text-[var(--cream)] transition-colors duration-200">
+                  <span className="text-sm group-hover:text-[var(--color-cream)] transition-colors duration-200">
                     {s.handle}
                   </span>
                   <span
                     className="text-[10px] uppercase tracking-widest ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                    style={{ color: 'var(--gold)' }}
+                    style={{ color: 'var(--color-gold)' }}
                   >
                     {s.label}
                   </span>
                 </a>
               ))}
             </div>
-
-            {/* Hashtag */}
             <div
-              className="mt-2 px-3 py-2 rounded-sm gold-border"
-              style={{ background: 'rgba(212,175,119,0.04)' }}
+              className="mt-2 px-3 py-2 rounded-sm"
+              style={{ border: '1px solid rgba(212,175,119,0.2)', background: 'rgba(212,175,119,0.04)' }}
             >
-              <p
-                className="font-display text-sm italic"
-                style={{ color: 'var(--gold)' }}
-              >
+              <p className="font-display text-sm italic" style={{ color: 'var(--color-gold)' }}>
                 #DontDrinkAndDialDecades
               </p>
             </div>
           </div>
         </div>
 
-        {/* Mid City Sound prominence band */}
+        {/* Mid City Sound band */}
         <div
           className="mt-14 mb-6 p-5 rounded-sm flex flex-col sm:flex-row items-center justify-between gap-4"
           style={{
@@ -187,13 +164,13 @@ export default function Footer() {
               className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
               style={{ background: 'rgba(212,175,119,0.12)', border: '1px solid rgba(212,175,119,0.3)' }}
             >
-              <span className="text-xs" style={{ color: 'var(--gold)' }}>♪</span>
+              <span className="text-xs" style={{ color: 'var(--color-gold)' }}>♪</span>
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: 'var(--mist)' }}>
+              <p className="text-[10px] uppercase tracking-[0.3em]" style={{ color: 'var(--color-mist)' }}>
                 A Mid City Sound Studios Campaign
               </p>
-              <p className="font-display text-base italic font-light" style={{ color: 'var(--cream)' }}>
+              <p className="font-display text-base italic font-light" style={{ color: 'var(--color-cream)' }}>
                 Lil Squiggle · Mid City Sound · Streetbeats
               </p>
             </div>
@@ -213,23 +190,22 @@ export default function Footer() {
           className="pt-5 flex flex-col md:flex-row items-center justify-between gap-3"
           style={{ borderTop: '1px solid rgba(212,175,119,0.1)' }}
         >
-          <p className="text-xs" style={{ color: 'var(--gold-dim)' }}>
+          <p className="text-xs" style={{ color: 'var(--color-mist)' }}>
             © {year} Mid City Sound Studios. All rights reserved.
           </p>
-          <p className="text-xs text-center" style={{ color: 'var(--gold-dim)' }}>
-            Written by{' '}
-            <span style={{ color: 'var(--mist)' }}>Cash Hollywood & Russ Kunkel</span>
-            {' '}· Produced by{' '}
-            <span style={{ color: 'var(--mist)' }}>Donald Markowitz & Gary Uffner</span>
+          <p className="text-xs text-center" style={{ color: 'var(--color-mist)' }}>
+            Sung by <span style={{ color: 'var(--color-cream)' }}>Pat Smith</span>
+            {' '}· Feat. <span style={{ color: 'var(--color-cream)' }}>Cash Hollywood</span>
+            {' '}· Produced by <span style={{ color: 'var(--color-cream)' }}>Donny Markowitz &amp; Gary Uffner</span>
           </p>
           <a
             href="https://midcitysound.com/merch"
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs uppercase tracking-[0.2em] transition-colors duration-200"
-            style={{ color: 'var(--gold-dim)' }}
-            onMouseEnter={(e) => ((e.target as HTMLElement).style.color = 'var(--gold)')}
-            onMouseLeave={(e) => ((e.target as HTMLElement).style.color = 'var(--gold-dim)')}
+            style={{ color: 'var(--color-mist)' }}
+            onMouseEnter={(e) => ((e.target as HTMLElement).style.color = 'var(--color-gold)')}
+            onMouseLeave={(e) => ((e.target as HTMLElement).style.color = 'var(--color-mist)')}
           >
             Shop All Merch ↗
           </a>
