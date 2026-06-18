@@ -1,6 +1,6 @@
-// src/app/music/page.tsx
 import type { Metadata } from "next"
-import Link              from "next/link"
+import Image from "next/image"
+import Link from "next/link"
 import { Music, ArrowRight, ExternalLink, Play } from "lucide-react"
 import { Button }    from "@/components/ui/button"
 import { Badge }     from "@/components/ui/badge"
@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator"
 
 export const metadata: Metadata = {
   title:       "Music",
-  description: "Don't Drink & Dial Decades — the original reggae-dub track by Pat Smith, produced by Donny Markowitz & Gary Uffner.",
+  description: "Don't Drink & Dial Decades — sung by Pat Smith, featuring Cash Hollywood, produced by Donny Markowitz & Gary Uffner.",
 }
 
 const PLATFORMS = [
@@ -33,7 +33,7 @@ export default function MusicPage() {
           </h1>
           <p className="text-mist text-sm max-w-lg leading-relaxed">
             The original reggae-dub track that powers the #DontDrinkAndDialDecades campaign.
-            Written by Pat Smith. Produced at Mid City Sound Studios, New Orleans.
+            Sung by Pat Smith, featuring Cash Hollywood. Produced at Mid City Sound Studios, New Orleans.
           </p>
         </div>
       </section>
@@ -43,14 +43,17 @@ export default function MusicPage() {
 
           {/* Track player card */}
           <div className="space-y-6">
-            <div className="border border-studio-border bg-studio-card rounded-sm p-7 space-y-6">
+            <div className="border border-studio-border bg-studio-card rounded-sm p-7 space-y-6 card-lift">
 
               {/* Album art + info */}
               <div className="flex items-start gap-5">
                 <div className="w-24 h-24 rounded-sm border border-studio-border bg-studio-dark flex items-center justify-center shrink-0 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_80%,rgba(29,158,117,0.15),transparent)]" />
-                  <Music className="w-8 h-8 text-rasta-green/40 relative z-10" />
-                  {/* Replace with: <Image src="/images/album-art.jpg" fill className="object-cover" alt="" /> */}
+                  <Image
+                    src="/images/tipsy-smile.jpg"
+                    alt="Lil Squiggle"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
                 <div>
                   <p className="text-[10px] tracking-[0.2em] uppercase text-rasta-green/70 mb-1.5">Original Track</p>
@@ -82,10 +85,7 @@ export default function MusicPage() {
                 </button>
                 <div>
                   <p className="text-cream text-sm font-medium">Don&apos;t Drink &amp; Dial Decades</p>
-                  <p className="text-mist text-xs">
-                    {/* Replace with real audio: <audio src="/audio/dont-drink-and-dial.wav" /> */}
-                    Add audio: /public/audio/dont-drink-and-dial.wav
-                  </p>
+                  <p className="text-mist text-xs">Add audio: /public/audio/dont-drink-and-dial.wav</p>
                 </div>
               </div>
 
@@ -93,8 +93,12 @@ export default function MusicPage() {
 
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
-                  <p className="text-mist/50 uppercase tracking-widest text-[9px] mb-0.5">Written by</p>
+                  <p className="text-mist/50 uppercase tracking-widest text-[9px] mb-0.5">Sung by</p>
                   <p className="text-cream">Pat Smith</p>
+                </div>
+                <div>
+                  <p className="text-mist/50 uppercase tracking-widest text-[9px] mb-0.5">Featuring</p>
+                  <p className="text-cream">Cash Hollywood</p>
                 </div>
                 <div>
                   <p className="text-mist/50 uppercase tracking-widest text-[9px] mb-0.5">Produced by</p>
@@ -117,7 +121,7 @@ export default function MusicPage() {
             <p className="text-[10px] tracking-[0.18em] uppercase text-gold/70 mb-5">Stream &amp; Download</p>
             {PLATFORMS.map(({ name, href, note }) => (
               <a key={name} href={href} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 border border-studio-border bg-studio-card rounded-sm hover:border-rasta-green/40 group transition-all">
+                className="flex items-center justify-between p-4 border border-studio-border bg-studio-card rounded-sm hover:border-rasta-green/40 group transition-all card-lift">
                 <div>
                   <p className="text-cream text-sm font-medium group-hover:text-rasta-green transition-colors">{name}</p>
                   <p className="text-mist/50 text-[11px]">{note}</p>
@@ -125,7 +129,18 @@ export default function MusicPage() {
                 <ExternalLink className="w-3.5 h-3.5 text-mist/30 group-hover:text-rasta-green transition-colors" />
               </a>
             ))}
-            <p className="text-mist/40 text-[10px] mt-3">← Replace # with real streaming links</p>
+            <p className="text-mist/40 text-[10px] mt-3">← Replace # with real streaming links when available</p>
+
+            {/* Don't Drink and Dial hero image */}
+            <div className="mt-6 rounded-sm overflow-hidden border border-studio-border card-lift">
+              <Image
+                src="/images/dont-drink-and-dial-hero.png"
+                alt="Don't Drink and Dial — When the call follows you through time"
+                width={600}
+                height={338}
+                className="w-full h-auto"
+              />
+            </div>
           </div>
         </div>
       </section>
