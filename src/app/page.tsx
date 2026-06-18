@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 
 const MERCH_URL = 'https://midcitysound.com/merch'
 
-// ── Teaser products — all link to unified store ───────────────────────────────
 const teaserProducts = [
   {
     name: 'Rotary Chaos Tee',
@@ -14,7 +14,7 @@ const teaserProducts = [
     price: '$28',
     desc: 'Vintage-washed heavyweight. Squiggle mid-dial, full chaos.',
     tag: 'Best Seller',
-    color: 'var(--green)',
+    color: 'var(--rasta-green)',
     accent: true,
   },
   {
@@ -23,7 +23,7 @@ const teaserProducts = [
     price: '$55',
     desc: 'Premium fleece. The flip phone era, distilled into one cozy statement.',
     tag: 'Limited',
-    color: 'var(--gold)',
+    color: 'var(--color-gold)',
     accent: false,
   },
   {
@@ -32,7 +32,7 @@ const teaserProducts = [
     price: '$32',
     desc: 'Unstructured six-panel. Studio-issue. Worn by the people who made the record.',
     tag: 'New',
-    color: 'var(--gold)',
+    color: 'var(--color-gold)',
     accent: false,
   },
   {
@@ -41,34 +41,35 @@ const teaserProducts = [
     price: '$60',
     desc: 'Heavyweight French terry. Three brands. One crew. Infinite regret.',
     tag: '',
-    color: 'var(--gold)',
+    color: 'var(--color-gold)',
     accent: false,
   },
 ]
 
-// ── Era timeline ─────────────────────────────────────────
 const eras = [
   {
     decade: '70s',
     device: 'Rotary Phone',
     glyph: '📞',
     desc: "Squiggle spins the dial. Avocado-green kitchen. Same mistake, analog edition.",
+    img: '/images/era-70s.png',
   },
   {
     decade: '90s',
     device: 'Flip Phone',
     glyph: '📱',
     desc: 'The satisfying snap of a flip. The unsatisfying aftermath of a 2am call.',
+    img: '/images/alternate-squiggle.png',
   },
   {
     decade: 'Now',
     device: 'Smartphone',
     glyph: '📲',
     desc: 'Face ID. Read receipts. Zero excuses. Maximum regret.',
+    img: '/images/era-modern.png',
   },
 ]
 
-// ── Section reveal hook ───────────────────────────────────
 function useReveal(threshold = 0.15) {
   const ref = useRef<HTMLElement>(null)
   const [revealed, setRevealed] = useState(false)
@@ -84,24 +85,18 @@ function useReveal(threshold = 0.15) {
   return { ref, revealed }
 }
 
-// ── Audio player — autoplay muted, volume control, pause ─────────────────
 function AudioToggle() {
   const audioRef  = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying]   = useState(false)
   const [muted,   setMuted]     = useState(true)
   const [volume,  setVolume]    = useState(0.20)
-  const [started, setStarted]   = useState(false)
 
-  // Autoplay muted on mount
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
     audio.volume = volume
     audio.muted  = true
-    audio.play().then(() => {
-      setPlaying(true)
-      setStarted(true)
-    }).catch(() => {})
+    audio.play().then(() => { setPlaying(true) }).catch(() => {})
   }, [])
 
   const togglePlay = () => {
@@ -135,7 +130,6 @@ function AudioToggle() {
   return (
     <>
       <audio ref={audioRef} src="/audio/dont-drink-and-dial.wav" loop />
-      {/* Fixed player bar — bottom right */}
       <div
         className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-3 py-2 rounded-full"
         style={{
@@ -144,20 +138,18 @@ function AudioToggle() {
           backdropFilter: 'blur(16px)',
         }}
       >
-        {/* Volume slider — shown when not muted */}
         <input
           type="range" min={0} max={1} step={0.05}
           value={muted ? 0 : volume}
           onChange={handleVolume}
-          className="w-16 h-0.5 accent-amber-400 cursor-pointer"
-          style={{ accentColor: 'var(--gold)' }}
+          className="w-16 h-0.5 cursor-pointer"
+          style={{ accentColor: 'var(--color-gold)' }}
           aria-label="Volume"
         />
-        {/* Mute toggle */}
         <button
           onClick={toggleMute}
           className="w-7 h-7 flex items-center justify-center transition-colors"
-          style={{ color: muted ? 'rgba(212,175,119,0.3)' : 'var(--gold)' }}
+          style={{ color: muted ? 'rgba(212,175,119,0.3)' : 'var(--color-gold)' }}
           aria-label={muted ? 'Unmute' : 'Mute'}
         >
           {muted ? (
@@ -170,11 +162,10 @@ function AudioToggle() {
             </svg>
           )}
         </button>
-        {/* Play/Pause */}
         <button
           onClick={togglePlay}
           className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
-          style={{ background: 'rgba(212,175,119,0.15)', color: 'var(--gold)', border: '1px solid rgba(212,175,119,0.3)' }}
+          style={{ background: 'rgba(212,175,119,0.15)', color: 'var(--color-gold)', border: '1px solid rgba(212,175,119,0.3)' }}
           aria-label={playing ? 'Pause' : 'Play'}
         >
           {playing ? (
@@ -192,7 +183,6 @@ function AudioToggle() {
   )
 }
 
-// ── Page ─────────────────────────────────────────────────
 export default function Home() {
   const storyReveal = useReveal()
   const shopReveal  = useReveal()
@@ -205,27 +195,36 @@ export default function Home() {
 
       {/* ═══════════════════════════════ HERO ══════════════════════════════ */}
       <section
-        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden noise-overlay"
+        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
         style={{
-          background: 'radial-gradient(ellipse 80% 60% at 50% 0%, #1a1510 0%, var(--black) 65%)',
+          background: 'radial-gradient(ellipse 80% 60% at 50% 0%, #1a1510 0%, var(--color-black) 65%)',
         }}
       >
-        {/* Ambient glow */}
+        {/* Hero BG image */}
+        <div className="absolute inset-0 overflow-hidden">
+          <Image
+            src="/images/hero-bg.png"
+            alt=""
+            fill
+            className="object-cover opacity-25"
+            priority
+          />
+        </div>
+        {/* Gradient overlay */}
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(9,9,9,0.4) 0%, rgba(9,9,9,0.65) 60%, var(--color-black) 100%)' }}
+        />
+        {/* Vignette */}
+        <div className="absolute inset-0 vignette pointer-events-none" />
+        {/* Grain */}
+        <div className="absolute inset-0 grain-overlay pointer-events-none" />
+        {/* Ambient green glow */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: 'radial-gradient(ellipse 60% 40% at 50% 120%, rgba(29,158,117,0.08) 0%, transparent 70%)',
           }}
-        />
-
-        {/* Hero BG image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: 'url(/images/hero-bg.jpg)' }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(to bottom, rgba(9,9,9,0.3) 0%, rgba(9,9,9,0.6) 60%, var(--black) 100%)' }}
         />
 
         {/* Content */}
@@ -239,7 +238,6 @@ export default function Home() {
               rel="noopener noreferrer"
               className="group flex flex-col items-center gap-2"
             >
-              {/* Studio wordmark */}
               <div
                 className="flex items-center gap-3 px-6 py-3 rounded-sm transition-all duration-300 group-hover:border-[rgba(212,175,119,0.5)]"
                 style={{
@@ -251,13 +249,13 @@ export default function Home() {
                 <div className="flex flex-col items-end leading-none">
                   <span
                     className="font-display text-xs md:text-sm font-semibold uppercase tracking-[0.35em]"
-                    style={{ color: 'var(--gold)' }}
+                    style={{ color: 'var(--color-gold)' }}
                   >
                     Mid City Sound
                   </span>
                   <span
                     className="text-[8px] uppercase tracking-[0.5em] mt-0.5"
-                    style={{ color: 'var(--gold-dim)' }}
+                    style={{ color: 'var(--color-mist)' }}
                   >
                     Studios
                   </span>
@@ -265,24 +263,34 @@ export default function Home() {
                 <div className="w-px h-8 mx-1" style={{ background: 'rgba(212,175,119,0.25)' }} />
                 <span
                   className="font-display text-base md:text-lg italic font-light tracking-widest"
-                  style={{ color: 'var(--mist)' }}
+                  style={{ color: 'var(--color-mist)' }}
                 >
                   Presents
                 </span>
               </div>
               <span
                 className="text-[9px] uppercase tracking-[0.4em] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ color: 'var(--gold-dim)' }}
+                style={{ color: 'var(--color-mist)' }}
               >
                 midcitysound.com ↗
               </span>
             </a>
-            {/* Green Squiggle dot accent */}
             <div className="flex items-center gap-2">
               <div className="w-px h-3" style={{ background: 'rgba(29,158,117,0.4)' }} />
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--green)' }} />
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--rasta-green)' }} />
               <div className="w-px h-3" style={{ background: 'rgba(29,158,117,0.4)' }} />
             </div>
+          </div>
+
+          {/* Character image — tipsy smile above headline */}
+          <div className="animate-fade-in mb-4 relative w-32 h-32 md:w-40 md:h-40">
+            <Image
+              src="/images/tipsy-smile.jpg"
+              alt="Lil Squiggle — tipsy smile"
+              fill
+              className="object-contain drop-shadow-2xl"
+              priority
+            />
           </div>
 
           {/* Headline */}
@@ -290,7 +298,7 @@ export default function Home() {
             className="font-display animate-fade-up delay-100 text-gold-gradient leading-none tracking-tight"
             style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', fontWeight: 600 }}
           >
-            Don't Drink
+            Don&apos;t Drink
             <br />
             <span className="italic font-light">&amp; Dial</span>
           </h1>
@@ -298,18 +306,18 @@ export default function Home() {
           {/* Subtitle */}
           <p
             className="animate-fade-up delay-200 font-display text-base md:text-xl italic font-light mt-4 tracking-widest"
-            style={{ color: 'var(--mist)' }}
+            style={{ color: 'var(--color-mist)' }}
           >
             Decades
           </p>
 
           {/* Divider */}
           <div className="animate-fade-up delay-300 flex items-center gap-4 my-6 md:my-8">
-            <div className="gold-divider" />
-            <span className="text-[10px] uppercase tracking-[0.4em]" style={{ color: 'var(--gold-dim)' }}>
+            <div className="gold-divider w-16" />
+            <span className="text-[10px] uppercase tracking-[0.4em]" style={{ color: 'var(--color-mist)' }}>
               One call. Every era. Same regret.
             </span>
-            <div className="gold-divider" />
+            <div className="gold-divider w-16" />
           </div>
 
           {/* CTAs */}
@@ -325,41 +333,48 @@ export default function Home() {
             <a
               href="#story"
               className="btn-outline-gold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-sm"
-              style={{ color: 'var(--cream)' }}
+              style={{ color: 'var(--color-cream)' }}
             >
               The Story ↓
             </a>
           </div>
+          {/* Risk-reversal microcopy */}
+          <p
+            className="animate-fade-up delay-500 text-[11px] mt-3"
+            style={{ color: 'var(--color-mist)' }}
+          >
+            Ships from Mid City Sound · No account needed
+          </p>
 
           {/* Store sub-note */}
           <p
-            className="animate-fade-up delay-500 text-[10px] uppercase tracking-[0.25em] mt-4"
-            style={{ color: 'var(--gold-dim)' }}
+            className="animate-fade-up delay-500 text-[10px] uppercase tracking-[0.25em] mt-3"
+            style={{ color: 'var(--color-mist)' }}
           >
             Lil Squiggle &middot; Mid City Sound &middot; Streetbeats
           </p>
 
           {/* Video embed */}
           <div className="animate-fade-up delay-600 w-full max-w-2xl mt-12 md:mt-16">
-            <div className="video-frame aspect-video w-full">
+            <div className="relative rounded-sm overflow-hidden border" style={{ borderColor: 'rgba(212,175,119,0.2)' }}>
               <video
                 src="/video/flip-fails-1.mp4"
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="w-full h-full object-cover"
+                className="w-full aspect-video object-cover"
               />
               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10">
                 <span
                   className="text-[10px] uppercase tracking-[0.2em] px-2 py-1 rounded-sm"
-                  style={{ background: 'rgba(9,9,9,0.7)', color: 'var(--gold)', backdropFilter: 'blur(8px)' }}
+                  style={{ background: 'rgba(9,9,9,0.7)', color: 'var(--color-gold)', backdropFilter: 'blur(8px)' }}
                 >
                   Official PSA
                 </span>
                 <span
                   className="text-[10px] uppercase tracking-[0.2em] px-2 py-1 rounded-sm"
-                  style={{ background: 'rgba(9,9,9,0.7)', color: 'var(--mist)', backdropFilter: 'blur(8px)' }}
+                  style={{ background: 'rgba(9,9,9,0.7)', color: 'var(--color-mist)', backdropFilter: 'blur(8px)' }}
                 >
                   #DontDrinkAndDialDecades
                 </span>
@@ -370,8 +385,8 @@ export default function Home() {
 
         {/* Scroll cue */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-float">
-          <span className="text-[9px] uppercase tracking-[0.4em]" style={{ color: 'var(--gold-dim)' }}>Scroll</span>
-          <div className="w-px h-8" style={{ background: 'linear-gradient(to bottom, var(--gold-dim), transparent)' }} />
+          <span className="text-[9px] uppercase tracking-[0.4em]" style={{ color: 'var(--color-mist)' }}>Scroll</span>
+          <div className="w-px h-8" style={{ background: 'linear-gradient(to bottom, rgba(212,175,119,0.4), transparent)' }} />
         </div>
       </section>
 
@@ -379,14 +394,14 @@ export default function Home() {
       <section
         id="story"
         ref={storyReveal.ref as React.RefObject<HTMLElement>}
-        className={`section-reveal py-24 md:py-36 px-6 ${storyReveal.revealed ? 'revealed' : ''}`}
-        style={{ background: 'var(--charcoal)' }}
+        className={`py-24 md:py-36 px-6 transition-all duration-700 ${storyReveal.revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        style={{ background: 'var(--color-charcoal)' }}
       >
         <div className="max-w-6xl mx-auto">
 
           <div className="flex items-center gap-4 mb-12">
-            <div className="gold-divider" />
-            <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: 'var(--gold)' }}>
+            <div className="gold-divider w-16" />
+            <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: 'var(--color-gold)' }}>
               The Story
             </span>
           </div>
@@ -395,57 +410,60 @@ export default function Home() {
             <div className="flex flex-col gap-6">
               <h2
                 className="font-display leading-tight"
-                style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'var(--cream)', fontWeight: 500 }}
+                style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', color: 'var(--color-cream)', fontWeight: 500 }}
               >
-                Meet{' '}
-                <span className="italic text-gold-gradient">Lil Squiggle</span>
+                One character who can&apos;t{' '}
+                <span className="italic text-gold-gradient">stop dialing</span>
               </h2>
-              <p className="text-base leading-relaxed" style={{ color: 'var(--mist)' }}>
-                He's small, he's chibi, he's got Rasta colors and zero impulse control.
+              <p className="text-base leading-relaxed" style={{ color: 'var(--color-mist)' }}>
+                He&apos;s small, he&apos;s chibi, he&apos;s got Rasta colors and zero impulse control.
                 Lil Squiggle is the reggae-dub character who somehow finds himself making
                 the worst possible phone call — in every decade, on every device.
               </p>
-              <p className="text-base leading-relaxed" style={{ color: 'var(--mist)' }}>
-                1970s rotary? He's spinning it. 1990s flip phone? Snap. Modern smartphone
+              <p className="text-base leading-relaxed" style={{ color: 'var(--color-mist)' }}>
+                1970s rotary? He&apos;s spinning it. 1990s flip phone? Snap. Modern smartphone
                 with face ID, read receipts, and zero plausible deniability? Also him.
               </p>
               <p
                 className="font-display text-xl italic font-light leading-relaxed"
-                style={{ color: 'var(--gold)', borderLeft: '2px solid rgba(212,175,119,0.3)', paddingLeft: '1.25rem' }}
+                style={{ color: 'var(--color-gold)', borderLeft: '2px solid rgba(212,175,119,0.3)', paddingLeft: '1.25rem' }}
               >
-                "One call. Every era. Same regret."
+                &ldquo;One call. Every era. Same regret.&rdquo;
               </p>
               <div className="flex flex-col gap-1.5 pt-1">
-                <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--gold-dim)' }}>
+                <p className="text-xs uppercase tracking-[0.2em]" style={{ color: 'var(--color-mist)' }}>
                   A Mid City Sound Production
                 </p>
-                <p className="text-sm" style={{ color: 'var(--mist)' }}>
-                  Written by <span style={{ color: 'var(--cream)' }}>Cash Hollywood & Russ Kunkel</span> · Produced by <span style={{ color: 'var(--cream)' }}>Donald Markowitz & Gary Uffner</span>
+                <p className="text-sm" style={{ color: 'var(--color-mist)' }}>
+                  Sung by <span style={{ color: 'var(--color-cream)' }}>Pat Smith</span>
+                  {' '}· Feat. <span style={{ color: 'var(--color-cream)' }}>Cash Hollywood</span>
                 </p>
-                <p className="text-sm" style={{ color: 'var(--mist)' }}>
+                <p className="text-sm" style={{ color: 'var(--color-mist)' }}>
                   Produced by{' '}
-                  <span style={{ color: 'var(--cream)' }}>Donny Markowitz</span>
+                  <span style={{ color: 'var(--color-cream)' }}>Donny Markowitz</span>
                   {' '}&amp;{' '}
-                  <span style={{ color: 'var(--cream)' }}>Gary Uffner</span>
+                  <span style={{ color: 'var(--color-cream)' }}>Gary Uffner</span>
                 </p>
               </div>
             </div>
 
-            <div className="relative">
-              <div className="gold-border rounded-sm overflow-hidden" style={{ background: 'var(--charcoal-2)' }}>
-                <img
+            {/* Three-eras image */}
+            <div className="relative card-lift">
+              <div className="rounded-sm overflow-hidden border" style={{ borderColor: 'rgba(212,175,119,0.2)', background: 'var(--color-dark)' }}>
+                <Image
                   src="/images/three-eras.png"
-                  alt="Lil Squiggle through three eras"
-                  className="w-full h-full object-cover"
-                  style={{ minHeight: '320px' }}
+                  alt="One Guy. Three Eras. Same Regret."
+                  width={900}
+                  height={520}
+                  className="w-full h-auto"
                 />
               </div>
               <div
                 className="absolute -bottom-4 -right-4 px-5 py-3 rounded-sm"
-                style={{ background: 'var(--charcoal-3)', border: '1px solid rgba(212,175,119,0.25)' }}
+                style={{ background: 'var(--color-dark)', border: '1px solid rgba(212,175,119,0.25)' }}
               >
-                <p className="text-[9px] uppercase tracking-widest" style={{ color: 'var(--mist)' }}>Campaign</p>
-                <p className="font-display text-sm font-medium" style={{ color: 'var(--gold)' }}>#DontDrinkAndDialDecades</p>
+                <p className="text-[9px] uppercase tracking-widest" style={{ color: 'var(--color-mist)' }}>Campaign</p>
+                <p className="font-display text-sm font-medium" style={{ color: 'var(--color-gold)' }}>#DontDrinkAndDialDecades</p>
               </div>
             </div>
           </div>
@@ -455,21 +473,33 @@ export default function Home() {
             {eras.map((era, i) => (
               <div
                 key={era.decade}
-                className="relative p-6 rounded-sm gold-border flex flex-col gap-3 transition-all duration-300 hover:border-[rgba(212,175,119,0.4)]"
-                style={{ background: 'var(--charcoal-2)', transitionDelay: `${i * 80}ms` }}
+                className="relative rounded-sm flex flex-col overflow-hidden card-lift border transition-all duration-300"
+                style={{ background: 'var(--color-dark)', borderColor: 'rgba(212,175,119,0.15)', transitionDelay: `${i * 80}ms` }}
               >
-                <div className="flex items-center justify-between">
-                  <span className="font-display text-3xl font-semibold italic" style={{ color: 'var(--gold)' }}>
-                    '{era.decade}
-                  </span>
-                  <span className="text-2xl">{era.glyph}</span>
+                {/* Era character image */}
+                <div className="relative w-full aspect-square overflow-hidden">
+                  <Image
+                    src={era.img}
+                    alt={`Lil Squiggle in the ${era.decade}`}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 50%, var(--color-dark) 100%)' }} />
                 </div>
-                <p className="text-[10px] uppercase tracking-[0.25em]" style={{ color: 'var(--green)' }}>
-                  {era.device}
-                </p>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--mist)' }}>
-                  {era.desc}
-                </p>
+                <div className="p-6 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-display text-3xl font-semibold italic" style={{ color: 'var(--color-gold)' }}>
+                      &apos;{era.decade}
+                    </span>
+                    <span className="text-2xl">{era.glyph}</span>
+                  </div>
+                  <p className="text-[10px] uppercase tracking-[0.25em]" style={{ color: 'var(--rasta-green)' }}>
+                    {era.device}
+                  </p>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--color-mist)' }}>
+                    {era.desc}
+                  </p>
+                </div>
                 <div
                   className="absolute bottom-0 left-0 right-0 h-px"
                   style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,119,0.2), transparent)' }}
@@ -484,51 +514,53 @@ export default function Home() {
       <section
         id="shop"
         ref={shopReveal.ref as React.RefObject<HTMLElement>}
-        className={`section-reveal py-24 md:py-36 px-6 noise-overlay relative ${shopReveal.revealed ? 'revealed' : ''}`}
+        className={`py-24 md:py-36 px-6 relative grain-overlay transition-all duration-700 ${shopReveal.revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
         style={{
-          background: 'radial-gradient(ellipse 80% 50% at 50% 50%, #131008 0%, var(--black) 70%)',
+          background: 'radial-gradient(ellipse 80% 50% at 50% 50%, #131008 0%, var(--color-black) 70%)',
         }}
       >
         <div className="max-w-6xl mx-auto relative z-10">
 
-          {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div>
               <div className="flex items-center gap-4 mb-4">
-                <div className="gold-divider" />
-                <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: 'var(--gold)' }}>
+                <div className="gold-divider w-16" />
+                <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: 'var(--color-gold)' }}>
                   The Drop
                 </span>
               </div>
               <h2
                 className="font-display leading-tight"
-                style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: 'var(--cream)', fontWeight: 500 }}
+                style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: 'var(--color-cream)', fontWeight: 500 }}
               >
-                Shop Lil Squiggle
-                <br />
-                <span className="italic text-gold-gradient">+ Mid City Sound Merch</span>
+                Wear the{' '}
+                <span className="italic text-gold-gradient">era</span>
               </h2>
-              <p className="text-sm mt-4 max-w-md leading-relaxed" style={{ color: 'var(--mist)' }}>
+              <p className="text-sm mt-4 max-w-md leading-relaxed" style={{ color: 'var(--color-mist)' }}>
                 Lil Squiggle drops live alongside the full Mid City Sound and Streetbeats
                 collections. One store. Three brands. Limitless regret.
               </p>
             </div>
-            <a
-              href={MERCH_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-gold self-start md:self-end shrink-0 text-[#090909] font-semibold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-sm"
-            >
-              Shop Everything ↗
-            </a>
+            <div className="flex flex-col gap-2 self-start md:self-end">
+              <a
+                href={MERCH_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gold shrink-0 text-[#090909] font-semibold text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-sm"
+              >
+                Shop Everything ↗
+              </a>
+              <p className="text-[11px] text-center" style={{ color: 'var(--color-mist)' }}>
+                Free shipping on orders over $75
+              </p>
+            </div>
           </div>
 
-          {/* Brand label strip */}
           <div
             className="flex flex-wrap items-center gap-3 mb-10 p-4 rounded-sm"
             style={{ background: 'rgba(212,175,119,0.04)', border: '1px solid rgba(212,175,119,0.12)' }}
           >
-            <span className="text-[9px] uppercase tracking-[0.3em] mr-1" style={{ color: 'var(--mist)' }}>
+            <span className="text-[9px] uppercase tracking-[0.3em] mr-1" style={{ color: 'var(--color-mist)' }}>
               All at midcitysound.com/merch:
             </span>
             {[
@@ -541,7 +573,7 @@ export default function Home() {
                 className="text-[10px] uppercase tracking-[0.2em] px-3 py-1 rounded-full"
                 style={{
                   background: green ? 'rgba(29,158,117,0.12)' : 'rgba(212,175,119,0.08)',
-                  color: green ? 'var(--green)' : 'var(--gold)',
+                  color: green ? 'var(--rasta-green)' : 'var(--color-gold)',
                   border: `1px solid ${green ? 'rgba(29,158,117,0.25)' : 'rgba(212,175,119,0.2)'}`,
                 }}
               >
@@ -550,7 +582,6 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Teaser product grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {teaserProducts.map((product) => (
               <a
@@ -558,13 +589,12 @@ export default function Home() {
                 href={MERCH_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="product-card gold-border rounded-sm p-5 flex flex-col gap-4 group"
-                style={{ background: 'var(--charcoal)', textDecoration: 'none' }}
+                className="rounded-sm p-5 flex flex-col gap-4 card-lift group border"
+                style={{ background: 'var(--color-dark)', textDecoration: 'none', borderColor: 'rgba(212,175,119,0.15)' }}
               >
-                {/* Placeholder image area */}
                 <div
                   className="w-full aspect-square rounded-sm flex items-center justify-center relative overflow-hidden"
-                  style={{ background: 'var(--charcoal-2)' }}
+                  style={{ background: 'var(--color-charcoal)' }}
                 >
                   <div className="flex flex-col items-center gap-2 opacity-40">
                     <div
@@ -579,7 +609,7 @@ export default function Home() {
                     className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.2em] px-2 py-1 rounded-full"
                     style={{
                       background: product.accent ? 'rgba(29,158,117,0.15)' : 'rgba(212,175,119,0.1)',
-                      color: product.accent ? 'var(--green)' : 'var(--gold)',
+                      color: product.accent ? 'var(--rasta-green)' : 'var(--color-gold)',
                       border: `1px solid ${product.accent ? 'rgba(29,158,117,0.3)' : 'rgba(212,175,119,0.2)'}`,
                     }}
                   >
@@ -588,7 +618,7 @@ export default function Home() {
                   {product.tag && (
                     <span
                       className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded-sm"
-                      style={{ background: 'rgba(9,9,9,0.7)', color: 'var(--mist)', backdropFilter: 'blur(4px)' }}
+                      style={{ background: 'rgba(9,9,9,0.7)', color: 'var(--color-mist)', backdropFilter: 'blur(4px)' }}
                     >
                       {product.tag}
                     </span>
@@ -597,26 +627,25 @@ export default function Home() {
 
                 <div className="flex flex-col gap-1">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-display text-base font-medium leading-tight" style={{ color: 'var(--cream)' }}>
+                    <h3 className="font-display text-base font-medium leading-tight" style={{ color: 'var(--color-cream)' }}>
                       {product.name}
                     </h3>
-                    <span className="font-display text-base font-semibold shrink-0" style={{ color: 'var(--gold)' }}>
+                    <span className="font-display text-base font-semibold shrink-0" style={{ color: 'var(--color-gold)' }}>
                       {product.price}
                     </span>
                   </div>
-                  <p className="text-xs leading-relaxed" style={{ color: 'var(--mist)' }}>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--color-mist)' }}>
                     {product.desc}
                   </p>
                 </div>
 
-                <div className="mt-auto flex items-center gap-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: 'var(--gold-dim)' }}>
-                  <span className="group-hover:text-[var(--gold)] transition-colors duration-300">View at MCS ↗</span>
+                <div className="mt-auto flex items-center gap-2 text-[10px] uppercase tracking-[0.2em]" style={{ color: 'var(--color-mist)' }}>
+                  <span className="group-hover:text-[var(--color-gold)] transition-colors duration-300">View at MCS ↗</span>
                 </div>
               </a>
             ))}
           </div>
 
-          {/* Bottom CTA band */}
           <div
             className="mt-10 p-6 md:p-8 rounded-sm flex flex-col md:flex-row items-center justify-between gap-5"
             style={{
@@ -625,10 +654,10 @@ export default function Home() {
             }}
           >
             <div>
-              <p className="font-display text-xl italic font-light" style={{ color: 'var(--cream)' }}>
+              <p className="font-display text-xl italic font-light" style={{ color: 'var(--color-cream)' }}>
                 The full collection is live.
               </p>
-              <p className="text-sm mt-1" style={{ color: 'var(--mist)' }}>
+              <p className="text-sm mt-1" style={{ color: 'var(--color-mist)' }}>
                 Every drop from every era, plus the full Mid City Sound catalog.
               </p>
             </div>
@@ -648,72 +677,77 @@ export default function Home() {
       <section
         id="community"
         ref={ugcReveal.ref as React.RefObject<HTMLElement>}
-        className={`section-reveal py-24 md:py-36 px-6 ${ugcReveal.revealed ? 'revealed' : ''}`}
-        style={{ background: 'var(--charcoal)' }}
+        className={`py-24 md:py-36 px-6 transition-all duration-700 ${ugcReveal.revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        style={{ background: 'var(--color-charcoal)' }}
       >
         <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-8">
 
+          {/* Regret wince + tipsy smile expressions */}
+          <div className="flex items-center justify-center gap-6">
+            <div className="relative w-20 h-20 md:w-24 md:h-24">
+              <Image src="/images/tipsy-smile.jpg" alt="Tipsy Smile" fill className="object-contain" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-px h-3" style={{ background: 'rgba(29,158,117,0.4)' }} />
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--rasta-green)' }} />
+              <div className="w-px h-3" style={{ background: 'rgba(29,158,117,0.4)' }} />
+            </div>
+            <div className="relative w-20 h-20 md:w-24 md:h-24">
+              <Image src="/images/regret-wince.jpg" alt="Regret Wince" fill className="object-contain" />
+            </div>
+          </div>
+
           <div className="flex items-center gap-4">
-            <div className="gold-divider" />
-            <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: 'var(--gold)' }}>
+            <div className="gold-divider w-16" />
+            <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: 'var(--color-gold)' }}>
               Community
             </span>
-            <div className="gold-divider" />
+            <div className="gold-divider w-16" />
           </div>
 
           <h2
             className="font-display leading-tight"
-            style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', color: 'var(--cream)', fontWeight: 500 }}
+            style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', color: 'var(--color-cream)', fontWeight: 500 }}
           >
-            Join the{' '}
-            <span className="italic text-gold-gradient">Era</span>
+            Own your{' '}
+            <span className="italic text-gold-gradient">era</span>
           </h2>
 
-          <p className="text-base max-w-xl leading-relaxed" style={{ color: 'var(--mist)' }}>
+          <p className="text-base max-w-xl leading-relaxed" style={{ color: 'var(--color-mist)' }}>
             Share your worst decade-appropriate drunk dial story. Tag us.
             Use the hashtag. Lil Squiggle will feel slightly less alone.
           </p>
 
           <div
             className="w-full max-w-lg px-8 py-8 rounded-sm"
-            style={{ background: 'var(--charcoal-2)', border: '1px solid rgba(212,175,119,0.2)' }}
+            style={{ background: 'var(--color-dark)', border: '1px solid rgba(212,175,119,0.2)' }}
           >
-            <p className="font-display text-2xl md:text-3xl italic font-light" style={{ color: 'var(--gold)' }}>
+            <p className="font-display text-2xl md:text-3xl italic font-light" style={{ color: 'var(--color-gold)' }}>
               #DontDrinkAndDialDecades
             </p>
-            <p className="text-xs mt-2 uppercase tracking-widest" style={{ color: 'var(--mist)' }}>
+            <p className="text-xs mt-2 uppercase tracking-widest" style={{ color: 'var(--color-mist)' }}>
               Tag your era. Own your regret.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-4 mt-2">
             {[
-              { label: 'TikTok',    handle: '@lilsquigglemon', href: 'https://tiktok.com/@lilsquigglemon',   accent: 'var(--green)' },
-              { label: 'Instagram', handle: '@lil.squiggle',   href: 'https://instagram.com/lil.squiggle',  accent: 'var(--gold)' },
-              { label: 'YouTube',   handle: '@lilsquigglemon', href: 'https://youtube.com/@lilsquigglemon', accent: 'var(--gold)' },
-              { label: 'X',         handle: '@lilsquigglemon', href: 'https://x.com/lilsquigglemon',        accent: 'var(--mist)' },
+              { label: 'TikTok',    handle: '@lilsquigglemon', href: 'https://tiktok.com/@lilsquigglemon',   accent: 'var(--rasta-green)' },
+              { label: 'Instagram', handle: '@lil.squiggle',   href: 'https://instagram.com/lil.squiggle',  accent: 'var(--color-gold)' },
+              { label: 'YouTube',   handle: '@lilsquigglemon', href: 'https://youtube.com/@lilsquigglemon', accent: 'var(--color-gold)' },
+              { label: 'X',         handle: '@lilsquigglemon', href: 'https://x.com/lilsquigglemon',        accent: 'var(--color-mist)' },
             ].map((s) => (
               <a
                 key={s.label}
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-3 rounded-sm transition-all duration-300 group"
+                className="flex items-center gap-2 px-5 py-3 rounded-sm transition-all duration-300 group card-lift"
                 style={{
-                  background: 'var(--charcoal-3)',
+                  background: 'var(--color-dark)',
                   border: '1px solid rgba(212,175,119,0.15)',
-                  color: 'var(--mist)',
+                  color: 'var(--color-mist)',
                   textDecoration: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget
-                  el.style.borderColor = 'rgba(212,175,119,0.4)'
-                  el.style.color = 'var(--cream)'
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget
-                  el.style.borderColor = 'rgba(212,175,119,0.15)'
-                  el.style.color = 'var(--mist)'
                 }}
               >
                 <span className="text-[9px] uppercase tracking-[0.2em] font-medium" style={{ color: s.accent }}>
@@ -730,7 +764,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
             className="mt-2 btn-outline-gold text-xs uppercase tracking-[0.25em] px-7 py-3 rounded-sm"
-            style={{ color: 'var(--gold)' }}
+            style={{ color: 'var(--color-gold)' }}
           >
             Explore Mid City Sound ↗
           </a>
@@ -741,7 +775,7 @@ export default function Home() {
       <section
         className="py-16 md:py-20 px-6"
         style={{
-          background: 'var(--black)',
+          background: 'var(--color-black)',
           borderTop: '1px solid rgba(212,175,119,0.1)',
         }}
       >
@@ -753,7 +787,6 @@ export default function Home() {
               border: '1px solid rgba(212,175,119,0.2)',
             }}
           >
-            {/* Ambient glow */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
@@ -767,19 +800,18 @@ export default function Home() {
               }}
             />
 
-            {/* Text */}
             <div className="relative flex flex-col gap-3 flex-1 text-center md:text-left">
-              <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: 'var(--gold)' }}>
+              <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: 'var(--color-gold)' }}>
                 Part of the Mid City Sound family
               </p>
               <h3
                 className="font-display leading-tight"
-                style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: 'var(--cream)', fontWeight: 500 }}
+                style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: 'var(--color-cream)', fontWeight: 500 }}
               >
                 Three Brands.{' '}
                 <span className="italic text-gold-gradient">One Studio.</span>
               </h3>
-              <p className="text-sm leading-relaxed max-w-md" style={{ color: 'var(--mist)' }}>
+              <p className="text-sm leading-relaxed max-w-md" style={{ color: 'var(--color-mist)' }}>
                 Lil Squiggle lives inside the Mid City Sound universe alongside the full
                 studio catalog and Streetbeats. All merch — all eras — lives in one place.
               </p>
@@ -790,7 +822,7 @@ export default function Home() {
                     className="text-[9px] uppercase tracking-[0.2em] px-3 py-1 rounded-full"
                     style={{
                       background: i === 0 ? 'rgba(29,158,117,0.1)' : 'rgba(212,175,119,0.07)',
-                      color: i === 0 ? 'var(--green)' : 'var(--gold)',
+                      color: i === 0 ? 'var(--rasta-green)' : 'var(--color-gold)',
                       border: `1px solid ${i === 0 ? 'rgba(29,158,117,0.25)' : 'rgba(212,175,119,0.18)'}`,
                     }}
                   >
@@ -800,7 +832,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* CTA stack */}
             <div className="relative flex flex-col gap-3 shrink-0 w-full md:w-auto">
               <a
                 href="https://midcitysound.com/merch"
@@ -815,7 +846,7 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-outline-gold text-xs uppercase tracking-[0.2em] px-8 py-3.5 rounded-sm text-center whitespace-nowrap"
-                style={{ color: 'var(--mist)' }}
+                style={{ color: 'var(--color-mist)' }}
               >
                 midcitysound.com ↗
               </a>
