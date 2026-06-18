@@ -23,7 +23,7 @@ const ERAS = [
     device: 'Flip Phone',
     glyph: '📱',
     desc: 'The satisfying snap of a flip. The unsatisfying aftermath of a 2am call.',
-    img: '/images/era-90s.jpg',
+    img: '/images/era-90s.png',
     badge: 'era-badge-90s',
   },
   {
@@ -55,14 +55,14 @@ function useReveal(threshold = 0.12) {
 function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
-  const [muted, setMuted] = useState(true)
+  const [muted, setMuted] = useState(false)
   const [vol, setVol] = useState(0.2)
 
   useEffect(() => {
     const a = audioRef.current
     if (!a) return
     a.volume = vol
-    a.muted = true
+    a.muted = false
     a.play().then(() => setPlaying(true)).catch(() => {})
   }, [])
 
@@ -125,7 +125,7 @@ export default function Home() {
 
         {/* BG image — vortex scene */}
         <div className="absolute inset-0">
-          <Image src="/images/hero-bg.png" alt="" fill className="object-cover" style={{ opacity: 0.22 }} priority />
+          <Image src="/images/hero-bg.jpg" alt="" fill className="object-cover" style={{ opacity: 0.22 }} priority />
           <div className="absolute inset-0"
             style={{ background: 'linear-gradient(to bottom, rgba(9,9,9,0.45) 0%, rgba(9,9,9,0.75) 65%, var(--color-black) 100%)' }} />
         </div>
@@ -291,13 +291,15 @@ export default function Home() {
               <div key={era.decade}
                 className="rasta-card-lift rounded-sm overflow-hidden flex flex-col border"
                 style={{ background: 'var(--color-dark)', borderColor: 'rgba(212,175,119,0.12)', transitionDelay: `${i * 60}ms` }}>
-                {/* Full character image — object-contain so nothing is cropped */}
-                <div className="relative w-full bg-[#111]" style={{ aspectRatio: '3/4' }}>
+                {/* Character image — natural dimensions, zero padding, tight frame */}
+                <div className="relative w-full">
                   <Image
                     src={era.img}
                     alt={`Lil Squiggle in the ${era.label}`}
-                    fill
-                    className="object-contain"
+                    width={600}
+                    height={800}
+                    className="w-full h-auto block"
+                    style={{ display: 'block' }}
                   />
                   {/* Era badge overlay */}
                   <div className="absolute top-3 left-3">
