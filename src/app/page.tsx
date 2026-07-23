@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
 
 const MERCH_URL = 'https://midcitysound.com/merch/brand/squiggle'
 
@@ -116,7 +114,6 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
       <AudioPlayer />
 
       {/* ══════════════════════════════ HERO ═════════════════════════════════ */}
@@ -439,51 +436,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* ══════════════════════════ MCS BRIDGE ═══════════════════════════════ */}
-      <section className="py-16 px-6" style={{ background: 'var(--color-black)', borderTop: '1px solid rgba(212,175,119,0.08)' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="relative rounded-sm overflow-hidden p-8 md:p-12 flex flex-col md:flex-row items-center gap-8"
-            style={{ background: 'linear-gradient(135deg, #141008 0%, #0e0e0e 60%, #0a1208 100%)', border: '1px solid rgba(212,175,119,0.18)' }}>
-            <div className="absolute inset-0 pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse 60% 80% at 0% 50%, rgba(212,175,119,0.05) 0%, transparent 60%)' }} />
-            <div className="relative flex-1 text-center md:text-left flex flex-col gap-3">
-              <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: 'var(--color-gold)' }}>
-                Part of the Mid City Sound family
-              </p>
-              <h3 className="font-display"
-                style={{ fontSize: 'clamp(1.8rem, 3vw, 2.8rem)', color: 'var(--color-cream)', fontWeight: 500 }}>
-                Three Brands. <span className="italic text-gold-gradient">One Studio.</span>
-              </h3>
-              <p className="text-sm max-w-md" style={{ color: 'var(--color-mist)' }}>
-                Lil Squiggle lives inside the Mid City Sound universe alongside the full studio catalog and Street Beat.
-              </p>
-              <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                {[['Lil Squiggle', true], ['Mid City Sound', false], ['Street Beat', false]].map(([b, g]) => (
-                  <span key={b as string} className="text-[9px] uppercase tracking-[0.2em] px-3 py-1 rounded-full"
-                    style={{
-                      background: g ? 'rgba(29,158,117,0.1)' : 'rgba(212,175,119,0.07)',
-                      color: g ? 'var(--rasta-green)' : 'var(--color-gold)',
-                      border: `1px solid ${g ? 'rgba(29,158,117,0.25)' : 'rgba(212,175,119,0.18)'}`,
-                    }}>
-                    {b as string}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="relative flex flex-col gap-3 w-full md:w-auto shrink-0">
-              <a href={MERCH_URL} target="_blank" rel="noopener noreferrer" className="btn-gold text-center">
-                Shop All Merch ↗
-              </a>
-              <a href="https://midcitysound.com" target="_blank" rel="noopener noreferrer" className="btn-outline-gold text-center">
-                midcitysound.com ↗
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Footer />
     </>
   )
 }

@@ -174,7 +174,7 @@ export default function Footer() {
                 A Mid City Sound Studios Campaign
               </p>
               <p className="font-display text-base italic font-light" style={{ color: 'var(--color-cream)' }}>
-                Lil Squiggle · Mid City Sound · Streetbeats
+                Lil Squiggle · Mid City Sound · Street Beat
               </p>
             </div>
           </div>
