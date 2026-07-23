@@ -96,7 +96,7 @@ export default function Footer() {
                 { label: 'The Story', href: '#story' },
                 { label: 'Shop the Drop', href: '#shop' },
                 { label: 'Community', href: '#community' },
-                { label: 'midcitysound.com/merch ↗', href: 'https://midcitysound.com/merch' },
+                { label: 'midcitysound.com/merch ↗', href: 'https://midcitysound.com/merch/brand/squiggle' },
               ].map((link) => (
                 <a
                   key={link.label}
@@ -201,7 +201,7 @@ export default function Footer() {
             {' '}· Produced by <span style={{ color: 'var(--color-cream)' }}>Donny Markowitz &amp; Gary Uffner</span>
           </p>
           <a
-            href="https://midcitysound.com/merch"
+            href="https://midcitysound.com/merch/brand/squiggle"
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs uppercase tracking-[0.2em] transition-colors duration-200"

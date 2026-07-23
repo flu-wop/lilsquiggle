@@ -62,7 +62,7 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="https://midcitysound.com/merch"
+            href="https://midcitysound.com/merch/brand/squiggle"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-gold text-[#090909] font-semibold text-xs uppercase tracking-widest px-5 py-2.5 rounded-sm"
@@ -124,7 +124,7 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="https://midcitysound.com/merch"
+            href="https://midcitysound.com/merch/brand/squiggle"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMenuOpen(false)}

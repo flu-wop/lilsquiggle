@@ -2,5 +2,5 @@
 import { redirect } from "next/navigation"
 
 export default function MerchPage() {
-  redirect("https://midcitysound.com/merch")
+  redirect("https://midcitysound.com/merch/brand/squiggle")
 }

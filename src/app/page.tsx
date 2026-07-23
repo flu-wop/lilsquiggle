@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 
-const MERCH_URL = 'https://midcitysound.com/merch'
+const MERCH_URL = 'https://midcitysound.com/merch/brand/squiggle'
 
 const ERAS = [
   {
@@ -363,7 +363,7 @@ export default function Home() {
 
           {/* Single merch CTA — clean, no fake product grid */}
           <div className="flex flex-col items-center gap-2 mt-4">
-            <a href={MERCH_URL} target="_blank" rel="noopener noreferrer" className="btn-gold"
+            <a href="https://midcitysound.com/merch" target="_blank" rel="noopener noreferrer" className="btn-gold"
               style={{ fontSize: '0.75rem', letterSpacing: '0.25em', padding: '1.1rem 3rem' }}>
               Shop at midcitysound.com/merch ↗
             </a>
