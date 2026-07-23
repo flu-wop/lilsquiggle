@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { BuiltBySignature } from './BuiltBySignature'
 
 const socialLinks = [
   {
@@ -213,6 +214,8 @@ export default function Footer() {
           </a>
         </div>
       </div>
+
+      <BuiltBySignature />
     </footer>
   )
 }
