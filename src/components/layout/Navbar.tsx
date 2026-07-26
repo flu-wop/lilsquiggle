@@ -15,7 +15,7 @@ export default function Navbar() {
 
   const navLinks = [
     { label: 'The Story', href: '#story' },
-    { label: 'Shop the Drop', href: '#shop' },
+    { label: 'The Drop', href: '#shop' },
     { label: 'Community', href: '#community' },
   ]
 
