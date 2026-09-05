@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { Music, ArrowRight, ExternalLink, Play } from "lucide-react"
+import { Music, ArrowRight, ExternalLink } from "lucide-react"
 import { Button }    from "@/components/ui/button"
 import { Badge }     from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { TrackPlayer } from "@/components/TrackPlayer"
 
 export const metadata: Metadata = {
   title:       "Music",
@@ -66,28 +67,8 @@ export default function MusicPage() {
                 </div>
               </div>
 
-              {/* Waveform */}
-              <div className="flex items-center gap-[2px] h-10">
-                {Array.from({ length: 80 }).map((_, i) => {
-                  const h = Math.abs(Math.sin(i * 0.35)) * 22 + 4
-                  const isGreen = i < 35
-                  return (
-                    <div key={i} className={`rounded-[1px] flex-shrink-0 ${isGreen ? "bg-rasta-green/60" : "bg-studio-border"}`}
-                      style={{ width: "2.5px", height: `${h}px` }} />
-                  )
-                })}
-              </div>
-
-              {/* Play button + time */}
-              <div className="flex items-center gap-4">
-                <button className="w-12 h-12 rounded-full bg-rasta-green flex items-center justify-center hover:bg-rasta-green/80 transition-colors">
-                  <Play className="w-5 h-5 text-cream ml-0.5" />
-                </button>
-                <div>
-                  <p className="text-cream text-sm font-medium">Don&apos;t Drink &amp; Dial Decades</p>
-                  <p className="text-mist text-xs">Add audio: /public/audio/dont-drink-and-dial.wav</p>
-                </div>
-              </div>
+              {/* Player — real audio playback, see components/TrackPlayer.tsx */}
+              <TrackPlayer />
 
               <Separator />
 
