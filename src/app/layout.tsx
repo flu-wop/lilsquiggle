@@ -24,6 +24,7 @@ export const metadata: Metadata = {
     siteName:    "Lil Squiggle",
     title:       "Lil Squiggle — Don't Drink & Dial Decades",
     description: "One call. Every era. Same regret.",
+    images:      [{ url: "/images/og-image.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card:        "summary_large_image",
