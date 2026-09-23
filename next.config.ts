@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["@flu-wop/design-system"],
   images: {
     // Local /public images are always allowed — this config is here
     // in case you add external image domains later (e.g. Printful CDN)

@@ -182,7 +182,7 @@ export default function Footer() {
             href="https://midcitysound.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-gold shrink-0 text-[#090909] font-semibold text-[10px] uppercase tracking-[0.2em] px-5 py-2.5 rounded-sm whitespace-nowrap"
+            className="btn-gold shrink-0 text-studio-black font-semibold text-[10px] uppercase tracking-[0.2em] px-5 py-2.5 rounded-sm whitespace-nowrap"
           >
             midcitysound.com ↗
           </a>

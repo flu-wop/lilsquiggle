@@ -65,7 +65,7 @@ export default function Navbar() {
             href="https://midcitysound.com/merch/brand/squiggle"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-gold text-[#090909] font-semibold text-xs uppercase tracking-widest px-5 py-2.5 rounded-sm"
+            className="btn-gold text-studio-black font-semibold text-xs uppercase tracking-widest px-5 py-2.5 rounded-sm"
           >
             Shop the Drop ↗
           </a>
@@ -128,7 +128,7 @@ export default function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMenuOpen(false)}
-            className="btn-gold inline-block text-center text-[#090909] font-semibold text-xs uppercase tracking-widest px-5 py-3 rounded-sm mt-2"
+            className="btn-gold inline-block text-center text-studio-black font-semibold text-xs uppercase tracking-widest px-5 py-3 rounded-sm mt-2"
           >
             Shop the Drop ↗
           </a>
