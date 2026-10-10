@@ -6,7 +6,7 @@ export function BuiltBySignature() {
         className="text-center text-[11px] tracking-[0.15em] font-mono"
         style={{ color: 'var(--color-mist)' }}
       >
-        BUILT BY{" "}
+        Designed by{" "}
         <a
           href="https://in-flu-ential.vercel.app"
           target="_blank"
@@ -16,7 +16,7 @@ export function BuiltBySignature() {
           onMouseEnter={(e) => ((e.target as HTMLElement).style.color = 'var(--color-gold-light)')}
           onMouseLeave={(e) => ((e.target as HTMLElement).style.color = 'var(--color-gold)')}
         >
-          IN-FLU-ENTIAL LLC
+          IN-FLU-ENTIAL
         </a>
       </p>
     </div>
