@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@flu-wop/design-system": "github:flu-wop/design-system#v0.4.0",
+    "@flu-wop/design-system": "github:flu-wop/design-system#071e32eaaba5acb6a407996ea9faf0b78b9d7293",
     "@radix-ui/react-label": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-tabs": "^1.1.2",
