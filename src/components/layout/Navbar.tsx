@@ -32,7 +32,7 @@ export default function Navbar() {
         borderBottom: scrolled ? '1px solid rgba(212,175,119,0.12)' : '1px solid transparent',
       }}
     >
-      <nav className="max-w-7xl mx-auto px-6 md:px-10 flex items-center justify-between h-16 md:h-20">
+      <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
         <Link href="/" className="flex flex-col leading-none group">
           <span

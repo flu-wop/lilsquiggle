@@ -55,7 +55,7 @@ export default function StoryPage() {
     <div className="pt-16 min-h-screen bg-studio-black">
 
       <section className="py-20 px-6 border-b border-studio-border/40 bg-studio-charcoal">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <div className="rasta-divider w-14 mb-8" />
           <Badge variant="outline" className="mb-4 text-[10px] tracking-widest uppercase">
             The Story
@@ -85,7 +85,7 @@ export default function StoryPage() {
 
       {/* Production credits */}
       <section className="py-12 px-6 border-b border-studio-border/40">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { label: "Sung by",   name: "Pat Smith",                    sub: "Vocalist" },
@@ -104,7 +104,7 @@ export default function StoryPage() {
 
       {/* Three-eras hero image */}
       <section className="py-20 px-6 bg-studio-charcoal border-b border-studio-border/40">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <div className="text-center mb-10">
             <h2 className="font-display text-4xl text-cream">
               One Guy.{" "}
@@ -134,7 +134,7 @@ export default function StoryPage() {
 
       {/* Era deep-dives */}
       <section className="py-20 px-6">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <div className="text-center mb-14">
             <Badge variant="outline" className="mb-4 text-[10px] tracking-widest uppercase">
               The Timeline

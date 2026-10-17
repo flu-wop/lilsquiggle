@@ -42,7 +42,7 @@ export default function Hero() {
         style={{ background: 'linear-gradient(to bottom, rgba(9,9,9,0.45) 0%, rgba(9,9,9,0.75) 65%, var(--color-black) 100%)' }} />
       <div className="absolute inset-0 vignette pointer-events-none" />
 
-      <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 max-w-4xl mx-auto pt-20 w-full">
+      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto pt-20 w-full">
         <div className="animate-fade-in mb-8">
           <a href="https://midcitysound.com" target="_blank" rel="noopener noreferrer"
             className="inline-flex flex-wrap items-center justify-center gap-2 px-4 py-2.5 rounded-sm group"

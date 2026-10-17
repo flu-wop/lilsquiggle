@@ -18,7 +18,7 @@ export default function MusicPage() {
     <div className="pt-16 min-h-screen bg-studio-black">
 
       <section className="py-20 px-6 border-b border-studio-border/40 bg-studio-charcoal">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <div className="rasta-divider w-14 mb-8" />
           <Badge variant="outline" className="mb-4 text-[10px] tracking-widest uppercase">The Music</Badge>
           <h1 className="font-display text-5xl md:text-6xl text-cream mb-4 leading-tight">
@@ -34,7 +34,7 @@ export default function MusicPage() {
       </section>
 
       <section className="py-20 px-6">
-        <div className="mx-auto max-w-5xl grid md:grid-cols-[1fr_320px] gap-14 items-start">
+        <div className="mx-auto max-w-6xl grid md:grid-cols-[1fr_320px] gap-14 items-start">
 
           {/* Track player card */}
           <div className="space-y-6">
