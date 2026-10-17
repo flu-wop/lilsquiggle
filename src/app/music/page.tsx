@@ -6,18 +6,12 @@ import { Button }    from "@/components/ui/button"
 import { Badge }     from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { TrackPlayer } from "@/components/TrackPlayer"
+import { PLATFORMS } from "@/data/site"
 
 export const metadata: Metadata = {
   title:       "Music",
   description: "Don't Drink & Dial Decades — sung by Pat Smith, featuring Cash Hollywood, produced by Donny Markowitz & Gary Uffner.",
 }
-
-const PLATFORMS = [
-  { name: "Spotify",       href: "#", note: "Stream free" },
-  { name: "Apple Music",   href: "#", note: "Stream & download" },
-  { name: "YouTube Music", href: "#", note: "Watch the video" },
-  { name: "SoundCloud",    href: "#", note: "Free stream" },
-]
 
 export default function MusicPage() {
   return (
@@ -100,17 +94,26 @@ export default function MusicPage() {
           {/* Streaming platforms */}
           <div className="space-y-4">
             <p className="text-[10px] tracking-[0.18em] uppercase text-gold/70 mb-5">Stream &amp; Download</p>
-            {PLATFORMS.map(({ name, href, note }) => (
-              <a key={name} href={href} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 border border-studio-border bg-studio-card rounded-sm hover:border-rasta-green/40 group transition-all card-lift">
-                <div>
-                  <p className="text-cream text-sm font-medium group-hover:text-rasta-green transition-colors">{name}</p>
-                  <p className="text-mist/50 text-[11px]">{note}</p>
+            {PLATFORMS.map(({ name, href, note }) =>
+              href ? (
+                <a key={name} href={href} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 border border-studio-border bg-studio-card rounded-sm hover:border-rasta-green/40 group transition-all card-lift">
+                  <div>
+                    <p className="text-cream text-sm font-medium group-hover:text-rasta-green transition-colors">{name}</p>
+                    <p className="text-mist/50 text-[11px]">{note}</p>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-mist/30 group-hover:text-rasta-green transition-colors" />
+                </a>
+              ) : (
+                <div key={name} aria-disabled
+                  className="flex items-center justify-between p-4 border border-studio-border bg-studio-card rounded-sm opacity-60">
+                  <div>
+                    <p className="text-cream text-sm font-medium">{name}</p>
+                    <p className="text-mist/50 text-[11px]">Coming soon</p>
+                  </div>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-mist/30 group-hover:text-rasta-green transition-colors" />
-              </a>
-            ))}
-            <p className="text-mist/40 text-[10px] mt-3">← Replace # with real streaming links when available</p>
+              )
+            )}
 
             {/* Don't Drink and Dial hero image */}
             <div className="mt-6 rounded-sm overflow-hidden border border-studio-border card-lift">

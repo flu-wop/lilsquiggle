@@ -15,8 +15,10 @@ export default function Navbar() {
 
   const navLinks = [
     { label: 'The Story', href: '#story' },
+    { label: 'Eras', href: '#eras' },
+    { label: 'Clips', href: '#clips' },
+    { label: 'Stream', href: '#stream' },
     { label: 'The Drop', href: '#shop' },
-    { label: 'Community', href: '#community' },
   ]
 
   return (
@@ -105,7 +107,7 @@ export default function Navbar() {
       <div
         className="md:hidden overflow-hidden transition-all duration-400"
         style={{
-          maxHeight: menuOpen ? '300px' : '0',
+          maxHeight: menuOpen ? '420px' : '0',
           background: 'rgba(9,9,9,0.97)',
           backdropFilter: 'blur(20px)',
           borderBottom: menuOpen ? '1px solid rgba(212,175,119,0.12)' : 'none',

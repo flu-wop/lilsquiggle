@@ -4,6 +4,7 @@ import "@flu-wop/design-system/compat.css";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata: Metadata = {
   title: {
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html data-theme="studio" lang="en" className="dark">
       <body className="bg-studio-black text-cream antialiased">
+        <SmoothScroll />
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <Footer />
